@@ -1,0 +1,22 @@
+{
+  "all_sensitive_attributes": ["race"],
+  "number_fairness_constraints": 1,
+  "fairness_constraints": [
+    {
+      "sensitive_attributes":
+      {
+        "race": 1
+      },
+      "symbol": ">=",
+      "number": 10
+    },
+    {
+      "sensitive_attributes":
+      {
+        "race": 3
+      },
+      "symbol": ">=",
+      "number": 2
+    }
+  ]
+}

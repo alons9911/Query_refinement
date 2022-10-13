@@ -1,0 +1,13 @@
+{
+  "categorical_attributes": {
+    "M": ["EE", "ME", "CS"]
+  },
+  "selection_numeric_attributes": {
+    "GPA": [">=", 3.7, 0.05],
+    "IH": [">=", 100, 1]
+  },
+  "selection_categorical_attributes": {
+    "M": ["CS"]
+  }
+}
+

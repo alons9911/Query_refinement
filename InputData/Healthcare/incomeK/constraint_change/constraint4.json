@@ -1,0 +1,14 @@
+{
+  "all_sensitive_attributes": ["race"],
+  "number_fairness_constraints": 1,
+  "fairness_constraints": [
+    {
+      "sensitive_attributes":
+      {
+        "race": "race3"
+      },
+      "symbol": ">=",
+      "number": 40
+    }
+  ]
+}

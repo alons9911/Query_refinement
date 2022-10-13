@@ -1,0 +1,30 @@
+selection file, result
+
+Q1C1
+[0, 1, 0, 1, 0], [0, 2, 0, 0, 1]
+{'numeric': {'absences': ['<=', 50, 1], 'traveltime': ['>=', 2, 1]}, 'categorical': {'Mjob': ['health', 'teacher', 'other']}}
+{'numeric': {'absences': ['<=', 50, 1], 'traveltime': ['>=', 1, 1]}, 'categorical': {'Mjob': ['health', 'teacher', 'services']}}
+
+Q1C2
+[0, 2, 0, 0, 1], [0, 2, 0, 1, 0]
+{'numeric': {'absences': ['<=', 50, 1], 'traveltime': ['>=', 1, 1]}, 'categorical': {'Mjob': ['health', 'teacher', 'services']}}
+{'numeric': {'absences': ['<=', 50, 1], 'traveltime': ['>=', 1, 1]}, 'categorical': {'Mjob': ['health', 'teacher', 'other']}}
+
+Q1C3
+[0, 1, 0, 1, 0], [0, 2, 0, 0, 0]
+{'numeric': {'absences': ['<=', 50, 1], 'traveltime': ['>=', 2, 1]}, 'categorical': {'Mjob': ['health', 'teacher', 'other']}}
+{'numeric': {'absences': ['<=', 50, 1], 'traveltime': ['>=', 1, 1]}, 'categorical': {'Mjob': ['health', 'teacher']}}
+
+Q2C1
+[0, 0, 0, 0, 1, 0]
+{'numeric': {'failures': ['<=', 1, 1]}, 'categorical': {'Fjob': ['athome', 'services'], 'guardian': ['father', 'mother']}}
+
+Q2C2
+[0, 0, 1, 0, 1, 0]
+{'numeric': {'failures': ['<=', 1, 1]}, 'categorical': {'Fjob': ['athome', 'services', 'other'], 'guardian': ['father', 'mother']}}
+
+Q2C3
+[0, 0, 0, 0, 1, 0], [1, 0, 1, 1, 0, 1], [2, 0, 1, 0, 0, 1]
+{'numeric': {'failures': ['<=', 1, 1]}, 'categorical': {'Fjob': ['athome', 'services'], 'guardian': ['father', 'mother']}}
+{'numeric': {'failures': ['<=', 0, 1]}, 'categorical': {'Fjob': ['athome', 'services', 'other', 'teacher'], 'guardian': ['father', 'other']}}
+{'numeric': {'failures': ['<=', -1, 1]}, 'categorical': {'Fjob': ['athome', 'services', 'other'], 'guardian': ['father', 'other']}}

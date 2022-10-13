@@ -1,0 +1,12 @@
+{
+  "categorical_attributes": {
+    "Mjob": ["at_home", "health", "other", "services", "teacher"]
+  },
+  "selection_numeric_attributes": {
+    "absences": ["<=", 50, 1],
+    "traveltime": [">=", 3, 1]
+  },
+  "selection_categorical_attributes": {
+    "Mjob": ["health", "teacher"]
+  }
+}

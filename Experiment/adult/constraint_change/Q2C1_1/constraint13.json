@@ -1,0 +1,15 @@
+{
+  "all_sensitive_attributes": ["sex"],
+  "number_fairness_constraints": 1,
+  "fairness_constraints": [
+    {
+      "sensitive_attributes":
+      {
+        "sex": "Female"
+      },
+      "symbol": ">=",
+      "number": 300
+    }
+  ]
+}
+

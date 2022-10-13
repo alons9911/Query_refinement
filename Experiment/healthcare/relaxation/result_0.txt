@@ -1,0 +1,100 @@
+selection file, result
+
+Q1C1
+[0, 0, 1, 0], [0, 2, 0, 1], [39, 1, 0, 1], [62, 0, 0, 1], [31, 3, 0, 0], [90, 2, 0, 0]
+{'numeric': {'income': ['>=', 100, 1], 'num_children': ['>=', 3, 1]}, 'categorical': {'county': ['county2', 'county3', 'county1']}}
+{'numeric': {'income': ['>=', 100, 1], 'num_children': ['>=', 1, 1]}, 'categorical': {'county': ['county2', 'county3', 'county4']}}
+{'numeric': {'income': ['>=', 61, 1], 'num_children': ['>=', 2, 1]}, 'categorical': {'county': ['county2', 'county3', 'county4']}}
+{'numeric': {'income': ['>=', 38, 1], 'num_children': ['>=', 3, 1]}, 'categorical': {'county': ['county2', 'county3', 'county4']}}
+{'numeric': {'income': ['>=', 69, 1], 'num_children': ['>=', 0, 1]}, 'categorical': {'county': ['county2', 'county3']}}
+{'numeric': {'income': ['>=', 10, 1], 'num_children': ['>=', 1, 1]}, 'categorical': {'county': ['county2', 'county3']}}
+
+Q1C2
+[0, 0, 1, 1], [0, 3, 0, 1], [4, 2, 0, 1], [53, 0, 0, 1], [39, 1, 0, 1], [62, 2, 0, 0], [28, 3, 0, 0], [0, 1, 1, 0], [19, 0, 1, 0]
+{'numeric': {'income': ['>=', 100, 1], 'num_children': ['>=', 3, 1]}, 'categorical': {'county': ['county2', 'county3', 'county1', 'county4']}}
+{'numeric': {'income': ['>=', 100, 1], 'num_children': ['>=', 0, 1]}, 'categorical': {'county': ['county2', 'county3', 'county4']}}
+{'numeric': {'income': ['>=', 96, 1], 'num_children': ['>=', 1, 1]}, 'categorical': {'county': ['county2', 'county3', 'county4']}}
+{'numeric': {'income': ['>=', 47, 1], 'num_children': ['>=', 3, 1]}, 'categorical': {'county': ['county2', 'county3', 'county4']}}
+{'numeric': {'income': ['>=', 61, 1], 'num_children': ['>=', 2, 1]}, 'categorical': {'county': ['county2', 'county3', 'county4']}}
+{'numeric': {'income': ['>=', 38, 1], 'num_children': ['>=', 1, 1]}, 'categorical': {'county': ['county2', 'county3']}}
+{'numeric': {'income': ['>=', 72, 1], 'num_children': ['>=', 0, 1]}, 'categorical': {'county': ['county2', 'county3']}}
+{'numeric': {'income': ['>=', 100, 1], 'num_children': ['>=', 2, 1]}, 'categorical': {'county': ['county2', 'county3', 'county1']}}
+{'numeric': {'income': ['>=', 81, 1], 'num_children': ['>=', 3, 1]}, 'categorical': {'county': ['county2', 'county3', 'county1']}}
+
+Q1C3
+[0, 0, 1, 1], [0, 3, 0, 1], [4, 2, 0, 1], [39, 1, 0, 1], [53, 0, 0, 1], [62, 2, 0, 0], [28, 3, 0, 0], [0, 1, 1, 0], [19, 0, 1, 0]
+{'numeric': {'income': ['>=', 100, 1], 'num_children': ['>=', 3, 1]}, 'categorical': {'county': ['county2', 'county3', 'county1', 'county4']}}
+{'numeric': {'income': ['>=', 100, 1], 'num_children': ['>=', 0, 1]}, 'categorical': {'county': ['county2', 'county3', 'county4']}}
+{'numeric': {'income': ['>=', 96, 1], 'num_children': ['>=', 1, 1]}, 'categorical': {'county': ['county2', 'county3', 'county4']}}
+{'numeric': {'income': ['>=', 61, 1], 'num_children': ['>=', 2, 1]}, 'categorical': {'county': ['county2', 'county3', 'county4']}}
+{'numeric': {'income': ['>=', 47, 1], 'num_children': ['>=', 3, 1]}, 'categorical': {'county': ['county2', 'county3', 'county4']}}
+{'numeric': {'income': ['>=', 38, 1], 'num_children': ['>=', 1, 1]}, 'categorical': {'county': ['county2', 'county3']}}
+{'numeric': {'income': ['>=', 72, 1], 'num_children': ['>=', 0, 1]}, 'categorical': {'county': ['county2', 'county3']}}
+{'numeric': {'income': ['>=', 100, 1], 'num_children': ['>=', 2, 1]}, 'categorical': {'county': ['county2', 'county3', 'county1']}}
+{'numeric': {'income': ['>=', 81, 1], 'num_children': ['>=', 3, 1]}, 'categorical': {'county': ['county2', 'county3', 'county1']}}
+
+Q4C1
+[0, 0, 0, 1, 0], [0, 0, 5, 0, 1], [0, 1, 4, 0, 1], [43, 0, 4, 0, 1], [123, 0, 2, 0, 1], [82, 0, 3, 0, 1], [115, 1, 1, 0, 1], [21, 1, 3, 0, 1], [66, 1, 2, 0, 1], [0, 0, 8, 0, 0], [0, 1, 7, 0, 0], [19, 0, 7, 0, 0], [115, 0, 6, 0, 0], [19, 1, 6, 0, 0], [53, 1, 5, 0, 0]
+{'numeric': {'income': ['<=', 300, 1], 'num_children': ['<=', 4, 1], 'complications': ['>=', 8, 1]}, 'categorical': {'county': ['county2', 'county4', 'county1']}}
+{'numeric': {'income': ['<=', 300, 1], 'num_children': ['<=', 4, 1], 'complications': ['>=', 3, 1]}, 'categorical': {'county': ['county2', 'county4', 'county3']}}
+{'numeric': {'income': ['<=', 300, 1], 'num_children': ['<=', 3, 1], 'complications': ['>=', 4, 1]}, 'categorical': {'county': ['county2', 'county4', 'county3']}}
+{'numeric': {'income': ['<=', 257, 1], 'num_children': ['<=', 4, 1], 'complications': ['>=', 4, 1]}, 'categorical': {'county': ['county2', 'county4', 'county3']}}
+{'numeric': {'income': ['<=', 177, 1], 'num_children': ['<=', 4, 1], 'complications': ['>=', 6, 1]}, 'categorical': {'county': ['county2', 'county4', 'county3']}}
+{'numeric': {'income': ['<=', 218, 1], 'num_children': ['<=', 4, 1], 'complications': ['>=', 5, 1]}, 'categorical': {'county': ['county2', 'county4', 'county3']}}
+{'numeric': {'income': ['<=', 185, 1], 'num_children': ['<=', 3, 1], 'complications': ['>=', 7, 1]}, 'categorical': {'county': ['county2', 'county4', 'county3']}}
+{'numeric': {'income': ['<=', 279, 1], 'num_children': ['<=', 3, 1], 'complications': ['>=', 5, 1]}, 'categorical': {'county': ['county2', 'county4', 'county3']}}
+{'numeric': {'income': ['<=', 234, 1], 'num_children': ['<=', 3, 1], 'complications': ['>=', 6, 1]}, 'categorical': {'county': ['county2', 'county4', 'county3']}}
+{'numeric': {'income': ['<=', 300, 1], 'num_children': ['<=', 4, 1], 'complications': ['>=', 0, 1]}, 'categorical': {'county': ['county2', 'county4']}}
+{'numeric': {'income': ['<=', 300, 1], 'num_children': ['<=', 3, 1], 'complications': ['>=', 1, 1]}, 'categorical': {'county': ['county2', 'county4']}}
+{'numeric': {'income': ['<=', 281, 1], 'num_children': ['<=', 4, 1], 'complications': ['>=', 1, 1]}, 'categorical': {'county': ['county2', 'county4']}}
+{'numeric': {'income': ['<=', 185, 1], 'num_children': ['<=', 4, 1], 'complications': ['>=', 2, 1]}, 'categorical': {'county': ['county2', 'county4']}}
+{'numeric': {'income': ['<=', 281, 1], 'num_children': ['<=', 3, 1], 'complications': ['>=', 2, 1]}, 'categorical': {'county': ['county2', 'county4']}}
+{'numeric': {'income': ['<=', 247, 1], 'num_children': ['<=', 3, 1], 'complications': ['>=', 3, 1]}, 'categorical': {'county': ['county2', 'county4']}}
+
+Q4C2
+[0, 0, 3, 1, 1], [0, 1, 2, 1, 1], [22, 0, 2, 1, 1], [118, 1, 1, 1, 1], [113, 1, 2, 1, 0], [0, 1, 8, 0, 0], [43, 0, 8, 0, 0], [0, 0, 7, 0, 1], [43, 0, 6, 0, 1], [53, 0, 5, 0, 1], [123, 0, 4, 0, 1], [0, 1, 6, 0, 1], [123, 1, 3, 0, 1], [82, 1, 4, 0, 1], [43, 1, 5, 0, 1], [43, 1, 7, 0, 0], [0, 0, 5, 1, 0], [24, 0, 4, 1, 0], [117, 0, 3, 1, 0], [0, 1, 4, 1, 0], [24, 1, 3, 1, 0]
+{'numeric': {'income': ['<=', 300, 1], 'num_children': ['<=', 4, 1], 'complications': ['>=', 5, 1]}, 'categorical': {'county': ['county2', 'county4', 'county1', 'county3']}}
+{'numeric': {'income': ['<=', 300, 1], 'num_children': ['<=', 3, 1], 'complications': ['>=', 6, 1]}, 'categorical': {'county': ['county2', 'county4', 'county1', 'county3']}}
+{'numeric': {'income': ['<=', 278, 1], 'num_children': ['<=', 4, 1], 'complications': ['>=', 6, 1]}, 'categorical': {'county': ['county2', 'county4', 'county1', 'county3']}}
+{'numeric': {'income': ['<=', 182, 1], 'num_children': ['<=', 3, 1], 'complications': ['>=', 7, 1]}, 'categorical': {'county': ['county2', 'county4', 'county1', 'county3']}}
+{'numeric': {'income': ['<=', 187, 1], 'num_children': ['<=', 3, 1], 'complications': ['>=', 6, 1]}, 'categorical': {'county': ['county2', 'county4', 'county1']}}
+{'numeric': {'income': ['<=', 300, 1], 'num_children': ['<=', 3, 1], 'complications': ['>=', 0, 1]}, 'categorical': {'county': ['county2', 'county4']}}
+{'numeric': {'income': ['<=', 257, 1], 'num_children': ['<=', 4, 1], 'complications': ['>=', 0, 1]}, 'categorical': {'county': ['county2', 'county4']}}
+{'numeric': {'income': ['<=', 300, 1], 'num_children': ['<=', 4, 1], 'complications': ['>=', 1, 1]}, 'categorical': {'county': ['county2', 'county4', 'county3']}}
+{'numeric': {'income': ['<=', 257, 1], 'num_children': ['<=', 4, 1], 'complications': ['>=', 2, 1]}, 'categorical': {'county': ['county2', 'county4', 'county3']}}
+{'numeric': {'income': ['<=', 247, 1], 'num_children': ['<=', 4, 1], 'complications': ['>=', 3, 1]}, 'categorical': {'county': ['county2', 'county4', 'county3']}}
+{'numeric': {'income': ['<=', 177, 1], 'num_children': ['<=', 4, 1], 'complications': ['>=', 4, 1]}, 'categorical': {'county': ['county2', 'county4', 'county3']}}
+{'numeric': {'income': ['<=', 300, 1], 'num_children': ['<=', 3, 1], 'complications': ['>=', 2, 1]}, 'categorical': {'county': ['county2', 'county4', 'county3']}}
+{'numeric': {'income': ['<=', 177, 1], 'num_children': ['<=', 3, 1], 'complications': ['>=', 5, 1]}, 'categorical': {'county': ['county2', 'county4', 'county3']}}
+{'numeric': {'income': ['<=', 218, 1], 'num_children': ['<=', 3, 1], 'complications': ['>=', 4, 1]}, 'categorical': {'county': ['county2', 'county4', 'county3']}}
+{'numeric': {'income': ['<=', 257, 1], 'num_children': ['<=', 3, 1], 'complications': ['>=', 3, 1]}, 'categorical': {'county': ['county2', 'county4', 'county3']}}
+{'numeric': {'income': ['<=', 257, 1], 'num_children': ['<=', 3, 1], 'complications': ['>=', 1, 1]}, 'categorical': {'county': ['county2', 'county4']}}
+{'numeric': {'income': ['<=', 300, 1], 'num_children': ['<=', 4, 1], 'complications': ['>=', 3, 1]}, 'categorical': {'county': ['county2', 'county4', 'county1']}}
+{'numeric': {'income': ['<=', 276, 1], 'num_children': ['<=', 4, 1], 'complications': ['>=', 4, 1]}, 'categorical': {'county': ['county2', 'county4', 'county1']}}
+{'numeric': {'income': ['<=', 183, 1], 'num_children': ['<=', 4, 1], 'complications': ['>=', 5, 1]}, 'categorical': {'county': ['county2', 'county4', 'county1']}}
+{'numeric': {'income': ['<=', 300, 1], 'num_children': ['<=', 3, 1], 'complications': ['>=', 4, 1]}, 'categorical': {'county': ['county2', 'county4', 'county1']}}
+{'numeric': {'income': ['<=', 276, 1], 'num_children': ['<=', 3, 1], 'complications': ['>=', 5, 1]}, 'categorical': {'county': ['county2', 'county4', 'county1']}}
+
+Q4C3
+[0, 0, 3, 1, 1], [0, 1, 2, 1, 1], [22, 0, 2, 1, 1], [118, 1, 1, 1, 1], [113, 1, 2, 1, 0], [0, 1, 8, 0, 0], [0, 0, 7, 0, 1], [43, 0, 6, 0, 1], [53, 0, 5, 0, 1], [123, 0, 4, 0, 1], [43, 0, 8, 0, 0], [0, 1, 6, 0, 1], [82, 1, 4, 0, 1], [123, 1, 3, 0, 1], [43, 1, 5, 0, 1], [43, 1, 7, 0, 0], [0, 0, 5, 1, 0], [24, 0, 4, 1, 0], [117, 0, 3, 1, 0], [0, 1, 4, 1, 0], [24, 1, 3, 1, 0]
+{'numeric': {'income': ['<=', 300, 1], 'num_children': ['<=', 4, 1], 'complications': ['>=', 5, 1]}, 'categorical': {'county': ['county2', 'county4', 'county1', 'county3']}}
+{'numeric': {'income': ['<=', 300, 1], 'num_children': ['<=', 3, 1], 'complications': ['>=', 6, 1]}, 'categorical': {'county': ['county2', 'county4', 'county1', 'county3']}}
+{'numeric': {'income': ['<=', 278, 1], 'num_children': ['<=', 4, 1], 'complications': ['>=', 6, 1]}, 'categorical': {'county': ['county2', 'county4', 'county1', 'county3']}}
+{'numeric': {'income': ['<=', 182, 1], 'num_children': ['<=', 3, 1], 'complications': ['>=', 7, 1]}, 'categorical': {'county': ['county2', 'county4', 'county1', 'county3']}}
+{'numeric': {'income': ['<=', 187, 1], 'num_children': ['<=', 3, 1], 'complications': ['>=', 6, 1]}, 'categorical': {'county': ['county2', 'county4', 'county1']}}
+{'numeric': {'income': ['<=', 300, 1], 'num_children': ['<=', 3, 1], 'complications': ['>=', 0, 1]}, 'categorical': {'county': ['county2', 'county4']}}
+{'numeric': {'income': ['<=', 300, 1], 'num_children': ['<=', 4, 1], 'complications': ['>=', 1, 1]}, 'categorical': {'county': ['county2', 'county4', 'county3']}}
+{'numeric': {'income': ['<=', 257, 1], 'num_children': ['<=', 4, 1], 'complications': ['>=', 2, 1]}, 'categorical': {'county': ['county2', 'county4', 'county3']}}
+{'numeric': {'income': ['<=', 247, 1], 'num_children': ['<=', 4, 1], 'complications': ['>=', 3, 1]}, 'categorical': {'county': ['county2', 'county4', 'county3']}}
+{'numeric': {'income': ['<=', 177, 1], 'num_children': ['<=', 4, 1], 'complications': ['>=', 4, 1]}, 'categorical': {'county': ['county2', 'county4', 'county3']}}
+{'numeric': {'income': ['<=', 257, 1], 'num_children': ['<=', 4, 1], 'complications': ['>=', 0, 1]}, 'categorical': {'county': ['county2', 'county4']}}
+{'numeric': {'income': ['<=', 300, 1], 'num_children': ['<=', 3, 1], 'complications': ['>=', 2, 1]}, 'categorical': {'county': ['county2', 'county4', 'county3']}}
+{'numeric': {'income': ['<=', 218, 1], 'num_children': ['<=', 3, 1], 'complications': ['>=', 4, 1]}, 'categorical': {'county': ['county2', 'county4', 'county3']}}
+{'numeric': {'income': ['<=', 177, 1], 'num_children': ['<=', 3, 1], 'complications': ['>=', 5, 1]}, 'categorical': {'county': ['county2', 'county4', 'county3']}}
+{'numeric': {'income': ['<=', 257, 1], 'num_children': ['<=', 3, 1], 'complications': ['>=', 3, 1]}, 'categorical': {'county': ['county2', 'county4', 'county3']}}
+{'numeric': {'income': ['<=', 257, 1], 'num_children': ['<=', 3, 1], 'complications': ['>=', 1, 1]}, 'categorical': {'county': ['county2', 'county4']}}
+{'numeric': {'income': ['<=', 300, 1], 'num_children': ['<=', 4, 1], 'complications': ['>=', 3, 1]}, 'categorical': {'county': ['county2', 'county4', 'county1']}}
+{'numeric': {'income': ['<=', 276, 1], 'num_children': ['<=', 4, 1], 'complications': ['>=', 4, 1]}, 'categorical': {'county': ['county2', 'county4', 'county1']}}
+{'numeric': {'income': ['<=', 183, 1], 'num_children': ['<=', 4, 1], 'complications': ['>=', 5, 1]}, 'categorical': {'county': ['county2', 'county4', 'county1']}}
+{'numeric': {'income': ['<=', 300, 1], 'num_children': ['<=', 3, 1], 'complications': ['>=', 4, 1]}, 'categorical': {'county': ['county2', 'county4', 'county1']}}
+{'numeric': {'income': ['<=', 276, 1], 'num_children': ['<=', 3, 1], 'complications': ['>=', 5, 1]}, 'categorical': {'county': ['county2', 'county4', 'county1']}}

@@ -1,0 +1,22 @@
+{
+  "all_sensitive_attributes": ["Gender"],
+  "number_fairness_constraints": 1,
+  "fairness_constraints": [
+    {
+      "sensitive_attributes":
+      {
+        "Gender": "F"
+      },
+      "symbol": ">=",
+      "number": 3
+    },
+    {
+      "sensitive_attributes":
+      {
+        "Gender": "M"
+      },
+      "symbol": "<=",
+      "number": 3
+    }
+  ]
+}

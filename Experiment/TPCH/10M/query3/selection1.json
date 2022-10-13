@@ -1,0 +1,24 @@
+{
+  "categorical_attributes": {
+    "c_mktsegment": ["FURNITURE","MACHINERY","AUTOMOBILE","BUILDING","HOUSEHOLD"]
+  },
+  "selection_numeric_attributes": {
+    "o_orderdate": ["<", "1995-03-10", 1],
+    "l_shipdate": [">", "1995-03-10", 1]
+  },
+  "selection_categorical_attributes": {
+    "c_mktsegment": ["AUTOMOBILE"]
+  },
+  "all_sensitive_attributes": ["L_RETURNFLAG"],
+  "number_fairness_constraints": 1,
+  "fairness_constraints": [
+    {
+      "sensitive_attributes":
+      {
+        "L_RETURNFLAG": "N"
+      },
+      "symbol": ">=",
+      "number": 40
+    }
+  ]
+}

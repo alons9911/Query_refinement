@@ -1,0 +1,23 @@
+{
+  "all_sensitive_attributes": ["gender", "age_group"],
+  "number_fairness_constraints": 1,
+  "fairness_constraints": [
+    {
+      "sensitive_attributes":
+      {
+        "gender": 0,
+        "age_group": "agegroup1"
+      },
+      "symbol": ">=",
+      "number": 20
+    },
+    {
+      "sensitive_attributes":
+      {
+        "age_group": "agegroup3"
+      },
+      "symbol": ">=",
+      "number": 150
+    }
+  ]
+}

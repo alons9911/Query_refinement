@@ -1,0 +1,24 @@
+{
+  "all_sensitive_attributes": ["Gender", "Race", "Age group"],
+  "number_fairness_constraints": 2,
+  "fairness_constraints": [
+    {
+      "sensitive_attributes":
+      {
+        "Gender": "F",
+        "Race": "B"
+      },
+      "symbol": ">=",
+      "number": 1
+    },
+    {
+      "sensitive_attributes":
+      {
+        "Gender": "F",
+        "Age group": 0
+      },
+      "symbol": "<=",
+      "number": 1
+    }
+  ]
+}

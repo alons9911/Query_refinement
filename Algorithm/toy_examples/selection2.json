@@ -1,0 +1,32 @@
+{
+  "categorical_attributes": {
+    "M": ["EE", "ME", "CS"]
+  },
+  "selection_numeric_attributes": {
+    "GPA": [">=", 3.7, 0.05],
+    "IH": [">=", 100, 1]
+  },
+  "selection_categorical_attributes": {
+    "M": ["CS"]
+  },
+  "all_sensitive_attributes": ["Gender"],
+  "number_fairness_constraints": 1,
+  "fairness_constraints": [
+    {
+      "sensitive_attributes":
+      {
+        "Gender": "F"
+      },
+      "symbol": ">=",
+      "number": 3
+    },
+    {
+      "sensitive_attributes":
+      {
+        "Gender": "M"
+      },
+      "symbol": "<=",
+      "number": 3
+    }
+  ]
+}

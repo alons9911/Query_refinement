@@ -1,0 +1,12 @@
+c_mktsegment:
+FURNITURE
+MACHINERY
+AUTOMOBILE
+BUILDING
+HOUSEHOLD
+
+
+
+min(o_orderdate), max(o_orderdate), min(l_shipdate), max(l_shipdate)
+1992-01-01,1998-08-02,1992-01-04,1998-11-29
+

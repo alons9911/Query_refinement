@@ -1,0 +1,13 @@
+{
+  "categorical_attributes": {
+    "county": ["county1", "county2", "county3", "county4"]
+  },
+  "selection_numeric_attributes": {
+    "income": [">=", 292, 1],
+    "num-children": ["<=", 6, 1],
+    "complications": ["<=", 8, 1]
+  },
+  "selection_categorical_attributes": {
+    "county": ["county2", "county4"]
+  }
+}
