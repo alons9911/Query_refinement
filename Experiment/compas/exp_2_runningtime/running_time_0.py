@@ -79,11 +79,11 @@ def run(q, c):
     time_output.close()
 
 
-run(1, 1)
-run(1, 2)
-run(1, 3)
-run(2, 1)
-run(2, 2)
-run(2, 3)
+# run(1, 1)
+# run(1, 2)
+# run(1, 3)
+# run(2, 1)
+# run(2, 2)
+# run(2, 3)
 
 summary_file.close()

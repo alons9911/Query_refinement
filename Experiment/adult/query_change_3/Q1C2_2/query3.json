@@ -1,8 +1,0 @@
-{
-  "selection_numeric_attributes": {
-    "education-num": [">=", 11, 1],
-    "hours-per-week": [">=", 21, 1],
-    "capital-gain": [">=", 5501, 1]
-  }
-}
-

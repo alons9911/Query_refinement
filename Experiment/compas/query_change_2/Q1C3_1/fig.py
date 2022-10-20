@@ -15,7 +15,7 @@ sns.set_style("whitegrid")
 # sns.palplot(sns.color_palette("Paired", 9))
 
 color = ['C1', 'C0', 'C3']
-label = ['PS-provenance', "PS-searching", "LT"]
+label = ['PS-provenance', "PS-searching", "Naive"]
 
 f_size = (14, 10)
 
@@ -60,8 +60,8 @@ fig, ax = plt.subplots(1, 1, figsize=f_size)
 plt.bar(index, execution_timeps1, bar_width, color=color[0], label=label[0])
 plt.bar(index, execution_timeps2, bar_width, bottom=execution_timeps1,
         color=color[1], label=label[1])
-plt.bar(index + bar_width, execution_timelt, bar_width,  color=color[2], label=label[2])
-plt.xticks(index + bar_width, x_list)
+# plt.bar(index + bar_width, execution_timelt, bar_width,  color=color[2], label=label[2])
+plt.xticks(index, x_list)
 
 plt.xlabel('Decile-score')
 plt.ylabel('Running time (s)')

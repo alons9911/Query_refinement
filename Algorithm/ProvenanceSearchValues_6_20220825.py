@@ -9,7 +9,17 @@ changes in subtract_provenance():
 remove the test_satisfying_rows which is very time-consuming, and never do it
 
 """
+from __future__ import print_function
 
+import sys
+from sys import getsizeof, stderr
+from itertools import chain
+from collections import deque
+try:
+    from reprlib import repr
+except ImportError:
+    pass
+from pympler import asizeof
 import copy
 from typing import List, Any
 import numpy as np
@@ -18,7 +28,6 @@ import time
 from intbitset import intbitset
 import json
 from Algorithm import LatticeTraversal_2_2022405 as lt
-
 assign_to_provenance_num = 0
 
 
@@ -2096,7 +2105,30 @@ def whether_satisfy_fairness_constraints(data, selected_attributes, sensitive_at
             return False
     return True
 
-
+# def get_size(obj, seen=None):
+#     """Recursively finds size of objects"""
+#
+#     size = sys.getsizeof(obj)
+#     if seen is None:
+#         seen = set()
+#
+#     obj_id = id(obj)
+#     if obj_id in seen:
+#         return 0
+#
+#     # Important mark as seen *before* entering recursion to gracefully handle
+#     # self-referential objects
+#     seen.add(obj_id)
+#
+#     if isinstance(obj, dict):
+#         size += sum([get_size(v, seen) for v in obj.values()])
+#         size += sum([get_size(k, seen) for k in obj.keys()])
+#     elif hasattr(obj, '__dict__'):
+#         size += get_size(obj.__dict__, seen)
+#     elif hasattr(obj, '__iter__') and not isinstance(obj, (file, str, bytes, bytearray)):
+#         size += sum([get_size(i, seen) for i in obj])
+#
+#     return size
 ########################################################################################################################
 
 
@@ -2148,6 +2180,59 @@ def FindMinimalRefinement(data_file, query_file, constraint_file, time_limit=5 *
         print("time out")
         return [], time.time() - time1, assign_to_provenance_num, provenance_time, 0
 
+    ###################### memory of provenance ########################
+
+
+    def total_size(o, handlers=None, verbose=False):
+        """ Returns the approximate memory footprint an object and all of its contents.
+
+        Automatically finds the contents of the following builtin containers and
+        their subclasses:  tuple, list, deque, dict, set and frozenset.
+        To search other containers, add handlers to iterate over their contents:
+
+            handlers = {SomeContainerClass: iter,
+                        OtherContainerClass: OtherContainerClass.get_elements}
+
+        """
+        if handlers is None:
+            handlers = {}
+        dict_handler = lambda d: chain.from_iterable(d.items())
+        all_handlers = {tuple: iter,
+                        list: iter,
+                        deque: iter,
+                        dict: dict_handler,
+                        set: iter,
+                        frozenset: iter,
+                        }
+        all_handlers.update(handlers)  # user handlers take precedence
+        seen = set()  # track which object id's have already been seen
+        default_size = getsizeof(0)  # estimate sizeof object without __sizeof__
+
+        def sizeof(o):
+            if id(o) in seen:  # do not double count the same object
+                return 0
+            seen.add(id(o))
+            s = getsizeof(o, default_size)
+
+            if verbose:
+                print(s, type(o), repr(o), file=stderr)
+
+            for typ, handler in all_handlers.items():
+                if isinstance(o, typ):
+                    s += sum(map(sizeof, handler(o)))
+                    break
+            return s
+
+        return sizeof(o)
+    #
+    # ##### Example call #####
+    #
+    # if __name__ == '__main__':
+    #     d = dict(a=1, b=2, c=3, d=[4, 5, 6, 7], e='a string of chars')
+    #     print(total_size(d, verbose=True))
+    # print(asizeof.asizeof(fairness_constraints_provenance_greater_than))
+    # print(asizeof.asizeof(fairness_constraints_provenance_smaller_than))
+    ###################### memory of provenance ########################
     if only_greater_than:
         time_table1 = time.time()
         PVT, PVT_head, categorical_att_columns, max_index_PVT = build_PVT_relax_only(data, selected_attributes,

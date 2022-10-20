@@ -54,10 +54,10 @@ def run_constraint(c):
 
         print("running time = {}".format(running_time1))
 
-        # print("========================== lattice traversal ===================================")
-        # minimal_refinements2, minimal_added_refinements2, running_time2 = \
-        #     lt.FindMinimalRefinement(data_file, query_file, constraint_file)
-        # print("running time = {}".format(running_time2))
+        print("========================== lattice traversal ===================================")
+        minimal_refinements2, minimal_added_refinements2, running_time2 = \
+            lt.FindMinimalRefinement(data_file, query_file, constraint_file)
+        print("running time = {}".format(running_time2))
         print(*minimal_refinements1, sep="\n")
         result_output.write("\n")
         idx = i

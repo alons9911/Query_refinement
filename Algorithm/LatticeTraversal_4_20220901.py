@@ -66,9 +66,11 @@ def whether_satisfy_fairness_constraints(data, selected_attributes, sensitive_at
             if row[att] not in selection_categorical_attributes[att]:
                 return 0
         return 1
-
+    # print(data[data['id']==169])
     data['satisfy_selection'] = data[selected_attributes].apply(select, axis=1)
     data_selected = data[data['satisfy_selection'] == 1]
+    # print(data_selected['id'].tolist())
+
     # whether satisfy fairness constraint
     for fc in fairness_constraints:
         sensitive_attributes = fc['sensitive_attributes']

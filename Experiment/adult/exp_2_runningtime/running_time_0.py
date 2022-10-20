@@ -15,6 +15,7 @@ from Algorithm import ProvenanceSearchValues_6_20220825 as ps
 from Algorithm import LatticeTraversal_4_20220901 as lt
 
 data_file = r"../../../InputData/Adult/adult.data"
+
 query_file_prefix = r"query"
 constraint_file_prefix = r"constraint"
 
@@ -77,7 +78,6 @@ def run(q, c):
     time_output.close()
 
 
-run(1, 3)
 run(2, 3)
 #
 # summary_file.close()

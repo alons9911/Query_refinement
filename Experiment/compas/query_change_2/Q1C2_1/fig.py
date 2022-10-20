@@ -16,7 +16,7 @@ sns.set_style("whitegrid")
 
 
 color = ['C1', 'C0', 'C3']
-label = ['PS-provenance', "PS-searching", "LT"]
+label = ['PS-provenance', "PS-searching", "Naive"]
 
 f_size = (14, 10)
 

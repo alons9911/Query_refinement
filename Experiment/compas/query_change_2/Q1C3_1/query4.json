@@ -4,7 +4,7 @@
   },
   "selection_numeric_attributes": {
     "juv-fel-count": [">=", 1, 1],
-    "decile-score": [">=", 4, 1]
+    "decile-score-x": [">=", 4, 1]
   },
   "selection_categorical_attributes": {
     "r-charge-degree": ["F"]

@@ -34,15 +34,15 @@ def run_constraint(c):
     constraint_file = r"./constraint" + str(c) + ".json"
 
 
-    time_output_file = r"./query_change_q1c2.csv"
+    time_output_file = r"./query_change_q1c2'.csv"
     time_output = open(time_output_file, "w")
     time_output.write("income,PS,LT\n")
 
-    result_output_file = r"./result_q1c2.txt"
+    result_output_file = r"./result_q1c2'.txt"
     result_output = open(result_output_file, "w")
     result_output.write("selection file, result\n")
 
-    for i in range(1, 6):
+    for i in range(4, 6):
         print("query", i)
         query_file = query_file_prefix + str(i) + ".json"
         print("========================== provenance search ===================================")
@@ -53,13 +53,13 @@ def run_constraint(c):
         print("running time = {}".format(running_time1))
 
         running_time2 = 0
-        # print("========================== lattice traversal ===================================")
-        # minimal_refinements2, minimal_added_refinements2, running_time2 = \
-        #     lt.FindMinimalRefinement(data_file, query_file, constraint_file, time_limit)
-        # if running_time2 > time_limit:
-        #     print("naive alg out of time with {} time limit".format(time_limit))
-        # else:
-        #     print("running time = {}".format(running_time2))
+        print("========================== lattice traversal ===================================")
+        minimal_refinements2, minimal_added_refinements2, running_time2 = \
+            lt.FindMinimalRefinement(data_file, query_file, constraint_file, time_limit)
+        if running_time2 > time_limit:
+            print("naive alg out of time with {} time limit".format(time_limit))
+        else:
+            print("running time = {}".format(running_time2))
         print(*minimal_refinements1, sep="\n")
         result_output.write("\n")
         idx = i * 50

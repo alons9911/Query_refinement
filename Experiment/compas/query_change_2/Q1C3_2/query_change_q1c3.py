@@ -62,7 +62,7 @@ def run_constraint(c):
         print(*minimal_refinements1, sep="\n")
         result_output.write("\n")
         idx = i
-        time_output.write("{},{:0.2f},{:0.2f},{:0.2f}\n".format(idx, running_time1, provenance_time,
+        time_output.write("{},{:0.2f},{:0.2f}\n".format(idx, provenance_time,
                                                                 search_time))
         result_output.write("{}\n".format(idx))
         result_output.write(", ".join(str(item) for item in minimal_added_refinements1))

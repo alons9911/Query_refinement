@@ -16,7 +16,7 @@ sns.set_style("whitegrid")
 
 
 color = ['C1', 'C0', 'C3']
-label = ['PS-provenance', "PS-searching", "LT"]
+label = ['PS-provenance', "PS-searching", "Naive"]
 
 
 f_size = (14, 10)
@@ -71,6 +71,7 @@ plt.ylabel('Running time (s)')
 plt.yticks([0, 50, 100, 150])
 plt.legend(loc='upper right', bbox_to_anchor=(1, 0.8))
 plt.yscale("log")
+plt.yticks([0.01, 0.1, 1, 10, 100])
 plt.tight_layout()
 plt.savefig("healthcare_query_change_q1c2.png",
             bbox_inches='tight')
