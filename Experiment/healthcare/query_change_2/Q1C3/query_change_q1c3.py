@@ -11,8 +11,8 @@ from intbitset import intbitset
 import json
 
 
-from Algorithm import ProvenanceSearchValues_6_20220825 as ps
-from Algorithm import LatticeTraversal_4_20220901 as lt
+from Algorithm import ProvenanceSearchValues as ps
+from Algorithm import Baseline as lt
 
 
 
