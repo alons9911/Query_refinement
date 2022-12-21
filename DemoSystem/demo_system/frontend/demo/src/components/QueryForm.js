@@ -1,6 +1,8 @@
 import './QueryForm.css';
 
 import React, {useState} from 'react';
+import DynamicTable from "./DynamicTable";
+import ShowQueryTable from "./ShowQueryTable";
 
 function QueryForm() {
   const [formFields, setFormFields] = useState([
@@ -12,6 +14,8 @@ function QueryForm() {
   const [table, setTable] = useState('compas-scores');
 
   const [query, setQuery] = useState('');
+  const [originalQueryResults, setOriginalQueryResults] = useState([]);
+
   const [refinements, setRefinements] = useState([]);
   const [err, setErr] = useState('');
 
@@ -30,9 +34,9 @@ function QueryForm() {
 
   const setDefault = () => {
     let fields = [
-        {field: 'juv-fel-count', operator: '>=', value:'4'},
-        {field: 'decile-score', operator: '>=', value:'8'},
-        {field: 'c-charge-degree', operator: 'IN', value:'["O"]'},
+        {field: 'juv_fel_count', operator: '>=', value:'4'},
+        {field: 'decile_score', operator: '>=', value:'8'},
+        {field: 'c_charge_degree', operator: 'IN', value:'["O"]'},
     ]
     let constraints = [
         {field: 'race',  value:'African-American', operator: '>=', amount: '30'},
@@ -64,7 +68,8 @@ function QueryForm() {
 
       const result = await build_query_response.text();
       console.log('query is: ', result);
-      setQuery(result);
+      setQuery(JSON.parse(result)["query"]);
+      setOriginalQueryResults(JSON.parse(result)["results"]);
 
 
       const run_query_response = await fetch('http://127.0.0.1:5000/run_query', {
@@ -202,13 +207,13 @@ function QueryForm() {
       <br/><br/>
       <button onClick={setDefault}>Set Default</button> <button onClick={submit}>Submit</button> <button onClick={reset}>Reset</button>
       <br/><br/>
-      <div>{query !== '' ? <div> <h3>Your requested query:</h3> {query} </div>:''}</div>
+      <div>{query !== '' ? <div> <h3>Your requested query:</h3> {query} <br/>Query Results:<br/><ShowQueryTable data={originalQueryResults}></ShowQueryTable></div>:''}</div>
     <div>{err !== '' ? "Error: " + err: ''}</div>
       <br/>
       <div>
         <h3>We found some minimal refinements:</h3>
         {refinements.map(function(ref, i){
-          return <p>{i}: {ref} <br/></p>;
+          return <p>{i}: {ref['query']} <br/><b>Distance To Original Query: {ref['distance_to_original']}</b><br/> <ShowQueryTable data={ref['results']}></ShowQueryTable> <br/></p>;
         })}
       </div>
     </div>
