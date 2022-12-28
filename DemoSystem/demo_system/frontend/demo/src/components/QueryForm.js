@@ -265,7 +265,7 @@ function QueryForm() {
                                         placeholder='Field'
                                         onChange={event => handleConstrainsFormChange(event, index)}
                                         value={form.field}
-                                    />
+                                    /><b>=</b>
                                     <input
                                         className='form-constraints-control'
                                         name='value'
@@ -333,7 +333,7 @@ function QueryForm() {
             </Col>
             <Col sm={5}>
                 <div>{query !== '' ?
-                    <div><br/><h3>Your requested query: </h3> <br/>{query}<br/><br/>
+                    <div><br/><h3>Your requested query</h3> <br/>{query}<br/><br/>
                         <ShowQueryTable data={originalQueryResults}
                                         selectedFields={getSelectedFields()}></ShowQueryTable></div> : ''}</div>
             </Col>
