@@ -1,3 +1,4 @@
+import React from 'react';
 import DynamicTable from "./DynamicTable";
 import {useState} from "react";
 

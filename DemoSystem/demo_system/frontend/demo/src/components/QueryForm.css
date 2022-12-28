@@ -1,0 +1,74 @@
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin: 5px;
+    height: 100%;
+}
+
+HeaderNavBar {
+    background-color: #4c0bce !important;
+    color: #ffffff !important;
+}
+
+input, select{
+    background: #4d4d50 !important;
+    color: #ffffff !important;
+    border-color: #2d2c2c !important;
+    margin: 3px !important;
+}
+
+
+.remove-btn {
+    color: #ef2020 !important;
+    border-color: transparent !important;
+    box-shadow: none;
+    margin-right: 5px;
+    background: transparent !important;
+}
+
+.add-btn {
+    color: #4ee3a7 !important;
+    border-color: transparent !important;
+    box-shadow: none;
+    background: transparent !important;
+}
+
+.set-default-btn {
+    margin-right: 5px;
+    color: #137ae8 !important;
+    border-color: transparent !important;
+    box-shadow: none;
+    background: transparent !important;
+
+}
+
+.submit-btn {
+    margin-right: 5px;
+    color: #4ee3a7 !important;
+    border-color: transparent !important;
+    box-shadow: none;
+    background: transparent !important;
+}
+
+.reset-btn {
+    margin-right: 5px;
+    color: #ef2020 !important;
+    border-color: transparent !important;
+    box-shadow: none;
+    background: transparent !important;
+}
+
+
+.btn-default{
+    color: #333;
+    background-color: transparent !important;
+    border-color: transparent;
+    outline: 0;
+}
+
+.btn-default:focus {
+    outline: none;
+    box-shadow: none;
+}

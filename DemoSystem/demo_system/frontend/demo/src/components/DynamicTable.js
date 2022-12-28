@@ -1,3 +1,4 @@
+import React from 'react';
 import "./DynamicTable.css";
 
 function DynamicTable(props){
