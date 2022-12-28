@@ -4,12 +4,38 @@ form {
     align-items: flex-start;
     justify-content: space-between;
     margin: 5px;
-    height: 100%;
+    height: 50%;
 }
 
 HeaderNavBar {
     background-color: #4c0bce !important;
     color: #ffffff !important;
+}
+
+.QueryRefinement {
+    color: #616f80 !important;
+}
+
+.form-constraints-control-short {
+    width: 10%;
+}
+.form-conditions-control-short {
+    width: 10%;
+}
+
+.form-constraints-control-long {
+    width: 100%;
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 30px #4d4d50 inset !important;
+    -webkit-text-fill-color: #ffffff;
+}
+
+.form-conditions-control-long {
+    width: 100%;
 }
 
 input, select{
@@ -22,6 +48,14 @@ input, select{
 
 .remove-btn {
     color: #ef2020 !important;
+    border-color: transparent !important;
+    box-shadow: none;
+    margin-right: 5px;
+    background: transparent !important;
+}
+
+.upload-btn {
+    color: #73ef20 !important;
     border-color: transparent !important;
     box-shadow: none;
     margin-right: 5px;

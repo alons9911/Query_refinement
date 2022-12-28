@@ -22,7 +22,7 @@ DICT_CONSTRAINTS = {"all_sensitive_attributes": ["race", "sex"],
                         {"sensitive_attributes": {"sex": "Male"}, "symbol": ">=", "number": 45}
                     ]}
 
-SQL_TEMPLATE = "SELECT * FROM '{table_name}' AS {table_char}\n" + \
+SQL_TEMPLATE = "SELECT * \nFROM '{table_name}' AS {table_char}\n" + \
                "WHERE {conds};"
 
 
