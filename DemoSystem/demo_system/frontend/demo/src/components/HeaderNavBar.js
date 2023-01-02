@@ -9,12 +9,12 @@ function HeaderNavBar() {
   return (
     <Navbar collapseOnSelect className="navbar-color" expand="lg" variant="dark">
       <Container>
-        <Navbar.Brand href="#home">Demo</Navbar.Brand>
+        <Navbar.Brand href="/queries">ERICA</Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link href="#features">Queries</Nav.Link>
-            <Nav.Link href="#pricing">Advanced</Nav.Link>
+            <Nav.Link href="/queries">Queries</Nav.Link>
+            <Nav.Link href="/pricing">Advanced</Nav.Link>
             <NavDropdown title="Dropdown" id="collasible-nav-dropdown" hidden={true}>
               <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
               <NavDropdown.Item href="#action/3.2">
@@ -28,8 +28,8 @@ function HeaderNavBar() {
             </NavDropdown>
           </Nav>
           <Nav>
-            <Nav.Link href="#Instructions">Instructions</Nav.Link>
-            <Nav.Link href="#aboutUs">About Us</Nav.Link>
+            <Nav.Link href="/Instructions">Instructions</Nav.Link>
+            <Nav.Link href="/aboutUs">About Us</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>

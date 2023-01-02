@@ -22,6 +22,12 @@ HeaderNavBar {
 .form-conditions-control-short {
     width: 10%;
 }
+.form-conditions-control-very-short {
+    width: 5%;
+}
+.form-constraints-control-very-short {
+    width: 5%;
+}
 
 .form-constraints-control-long {
     width: 100%;

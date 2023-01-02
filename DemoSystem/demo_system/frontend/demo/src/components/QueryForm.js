@@ -19,7 +19,7 @@ function QueryForm() {
         {field: '', operator: '', value: ''},
     ])
     const [formConstraints, setFormConstraints] = useState([
-        {field: '', value: '', operator: '', amount: ''},
+        {groups: [{field: '', value: ''}, {field: '', value: ''}], operator: '', amount: ''},
     ])
     const [table, setTable] = useState('compas-scores');
     const [tableFields, setTableFields] = useState(["id", "sex", "juv_fel_count", "c_jail_out", "age", "age_cat", "c_arrest_date", "c_case_number",
@@ -51,6 +51,11 @@ function QueryForm() {
         data[index][event.target.name] = event.target.value;
         setFormConstraints(data);
     }
+    const handleConstrainsGroupsFormChange = (event, constraintIndex, groupIndex) => {
+        let data = [...formConstraints];
+        data[constraintIndex]['groups'][groupIndex][event.target.name] = event.target.value;
+        setFormConstraints(data);
+    }
 
 
     const setDefault = () => {
@@ -60,8 +65,8 @@ function QueryForm() {
             {field: 'c_charge_degree', operator: 'IN', value: '["O"]'},
         ]
         let constraints = [
-            {field: 'race', value: 'African-American', operator: '>=', amount: '30'},
-            {field: 'sex', value: 'Male', operator: '>=', amount: '45'},
+            {groups: [{field: 'race', value: 'African-American'}], operator: '>=', amount: '30'},
+            {groups: [{field: 'sex', value: 'Male'}], operator: '>=', amount: '45'},
         ]
         setFormFields(fields);
         setFormConstraints(constraints);
@@ -137,8 +142,10 @@ function QueryForm() {
 
     const addConstraints = () => {
         let object = {
-            field: '',
-            value: '',
+            groups: [{
+                field: '',
+                value: '',
+            }],
             operator: '',
             amount: ''
         }
@@ -146,17 +153,29 @@ function QueryForm() {
         setFormConstraints([...formConstraints, object])
     }
 
+    const addConstraintsGroup = (index) => {
+        let object = {field: '', value: ''};
+        let constraints = [...formConstraints];
+        constraints[index]['groups'] = constraints[index]['groups'].concat([object]);
+        setFormConstraints(constraints)
+    }
+
     const removeConstraints = (index) => {
         let data = [...formConstraints];
         data.splice(index, 1)
         setFormConstraints(data)
     }
+    const removeConstraintGroup = (index, groupIndex) => {
+        let data = [...formConstraints];
+        data[index]['groups'].splice(groupIndex, 1)
+        setFormConstraints(data)
+    }
+
 
     const getSelectedFields = () => formFields.map(f => f.field).concat(formConstraints.map(f => f.field));
 
     return (
         <div className="QueryRefinement">
-            <HeaderNavBar></HeaderNavBar>
             <div className="QueryForm">
                 <Container>
                     <Row>
@@ -184,180 +203,207 @@ function QueryForm() {
                                         </Col>
                                     </Row>
                                     <Row>
-                                    <Col xs={8}>
-                                    <Form.Select id="db-select">
-                                        <option>compas-scores</option>
-                                    </Form.Select>
-                        </Col></Row>
-                    </Form.Group>
-                    <Form.Group as={Row} className="mb3">
-                        <Form.Label htmlFor="Select">Select Conditions</Form.Label>
-                        {formFields.map((form, index) => {
-                            return (
-                                <MDBInputGroup key={index} className='mb-3'>
-                                    <Button onClick={() => removeFields(index)}
-                                            className='remove-btn rounded-circle' color="secondery" floating
-                                            tag='a'>
+                                        <Col xs={8}>
+                                            <Form.Select id="db-select">
+                                                <option>compas-scores</option>
+                                            </Form.Select>
+                                        </Col></Row>
+                                </Form.Group>
+                                <Form.Group as={Row} className="mb3">
+                                    <Form.Label htmlFor="Select">Select Conditions</Form.Label>
+                                    {formFields.map((form, index) => {
+                                        return (
+                                            <MDBInputGroup key={index} className='mb-3'>
+                                                <Button onClick={() => removeFields(index)}
+                                                        className='remove-btn rounded-circle' color="secondery" floating
+                                                        tag='a'>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                         fill="currentColor" className="bi bi-trash"
+                                                         viewBox="0 0 16 16">
+                                                        <path
+                                                            d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                                        <path fill-rule="evenodd"
+                                                              d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                                    </svg>
+                                                </Button>
+                                                <input
+                                                    className='form-conditions-control'
+                                                    name='field'
+                                                    placeholder='Field'
+                                                    onChange={event => handleFieldsFormChange(event, index)}
+                                                    value={form.field}
+                                                />
+                                                <input
+                                                    className='form-conditions-control-very-short'
+                                                    name='operator'
+                                                    placeholder='op'
+                                                    onChange={event => handleFieldsFormChange(event, index)}
+                                                    value={form.operator}
+                                                />
+                                                <input
+                                                    className='form-conditions-control'
+                                                    name='value'
+                                                    placeholder='value'
+                                                    onChange={event => handleFieldsFormChange(event, index)}
+                                                    value={form.value}
+                                                />
+                                            </MDBInputGroup>
+                                        );
+                                    })}
+                                </Form.Group>
+                                <Button className='add-btn rounded-circle' onClick={addFields} floating tag='a'>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
+                                         className="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+                                        <path
+                                            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"/>
+                                    </svg>
+                                </Button>
+
+                                <Form.Group as={Row} className="mb3">
+                                    <Form.Label htmlFor="Select">Select Constraints</Form.Label>
+
+
+                                    {formConstraints.map((form, index) => {
+                                        return (
+                                            <MDBInputGroup key={index} className='mb-3'>
+                                                <Button onClick={() => removeConstraints(index)}
+                                                        className='remove-btn rounded-circle' color="secondery" floating
+                                                        tag='a'>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                         fill="currentColor" className="bi bi-trash"
+                                                         viewBox="0 0 16 16">
+                                                        <path
+                                                            d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                                        <path fill-rule="evenodd"
+                                                              d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                                    </svg>
+                                                </Button>
+                                                (
+                                                {form.groups.map((group, groupIndex) =>
+                                                    (<>
+                                                        <input
+                                                            className='form-constraints-control'
+                                                            name='field'
+                                                            placeholder='Field'
+                                                            onChange={event => handleConstrainsGroupsFormChange(event, index, groupIndex)}
+                                                            value={group.field}
+                                                        /><b>=</b>
+                                                        <input
+                                                            className='form-constraints-control'
+                                                            name='value'
+                                                            placeholder='value'
+                                                            onChange={event => handleConstrainsGroupsFormChange(event, index, groupIndex)}
+                                                            value={group.value}
+                                                        />
+                                                        {form.groups.length !== 1 ?
+                                                        <Button onClick={() => removeConstraintGroup(index, groupIndex)}
+                                                                className='remove-btn rounded-circle' color="secondery"
+                                                                floating
+                                                                tag='a'>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                                 height="16" fill="currentColor"
+                                                                 className="bi bi-dash-lg" viewBox="0 0 16 16">
+                                                                <path fill-rule="evenodd"
+                                                                      d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8Z"/>
+                                                            </svg>
+                                                        </Button> : ''
+                                                    }
+                                                    </>))}
+                                                <Button className='add-btn rounded-circle' onClick={()=>addConstraintsGroup(index)}
+                                                        floating tag='a'>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                         fill="currentColor"
+                                                         className="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+                                                        <path
+                                                            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"/>
+                                                    </svg>
+                                                </Button>)
+                                                <input
+                                                    className='form-constraints-control-very-short'
+                                                    name='operator'
+                                                    placeholder='op'
+                                                    onChange={event => handleConstrainsFormChange(event, index)}
+                                                    value={form.operator}
+                                                />
+                                                <input
+                                                    className='form-constraints-control-short'
+                                                    name='amount'
+                                                    placeholder='amount'
+                                                    onChange={event => handleConstrainsFormChange(event, index)}
+                                                    value={form.amount}
+                                                />
+                                            </MDBInputGroup>
+                                        );
+                                    })}
+                                </Form.Group>
+                                <Button className='add-btn rounded-circle' onClick={addConstraints} floating tag='a'>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
+                                         className="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+                                        <path
+                                            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"/>
+                                    </svg>
+                                </Button>
+
+
+                                <ButtonGroup className="me-2">
+                                    <Button className='set-default-btn rounded-circle' onClick={setDefault} tag='a'>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                             fill="currentColor" className="bi bi-trash"
-                                             viewBox="0 0 16 16">
+                                             fill="currentColor"
+                                             className="bi bi-shuffle" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd"
+                                                  d="M0 3.5A.5.5 0 0 1 .5 3H1c2.202 0 3.827 1.24 4.874 2.418.49.552.865 1.102 1.126 1.532.26-.43.636-.98 1.126-1.532C9.173 4.24 10.798 3 13 3v1c-1.798 0-3.173 1.01-4.126 2.082A9.624 9.624 0 0 0 7.556 8a9.624 9.624 0 0 0 1.317 1.918C9.828 10.99 11.204 12 13 12v1c-2.202 0-3.827-1.24-4.874-2.418A10.595 10.595 0 0 1 7 9.05c-.26.43-.636.98-1.126 1.532C4.827 11.76 3.202 13 1 13H.5a.5.5 0 0 1 0-1H1c1.798 0 3.173-1.01 4.126-2.082A9.624 9.624 0 0 0 6.444 8a9.624 9.624 0 0 0-1.317-1.918C4.172 5.01 2.796 4 1 4H.5a.5.5 0 0 1-.5-.5z"/>
+                                            <path
+                                                d="M13 5.466V1.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192zm0 9v-3.932a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192z"/>
+                                        </svg>
+                                    </Button>
+                                    <Button className='remove-btn rounded-circle' onClick={reset} tag='a'>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                             fill="currentColor" className="bi bi-trash" viewBox="0 0 16 16">
                                             <path
                                                 d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
                                             <path fill-rule="evenodd"
                                                   d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
                                         </svg>
                                     </Button>
-                                    <input
-                                        className='form-conditions-control'
-                                        name='field'
-                                        placeholder='Field'
-                                        onChange={event => handleFieldsFormChange(event, index)}
-                                        value={form.field}
-                                    />
-                                    <input
-                                        className='form-conditions-control-short'
-                                        name='operator'
-                                        placeholder='op'
-                                        onChange={event => handleFieldsFormChange(event, index)}
-                                        value={form.operator}
-                                    />
-                                    <input
-                                        className='form-conditions-control'
-                                        name='value'
-                                        placeholder='value'
-                                        onChange={event => handleFieldsFormChange(event, index)}
-                                        value={form.value}
-                                    />
-                                </MDBInputGroup>
-                            );
-                        })}
-                    </Form.Group>
-                    <Button className='add-btn rounded-circle' onClick={addFields} floating tag='a'>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
-                             className="bi bi-plus-circle-fill" viewBox="0 0 16 16">
-                            <path
-                                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"/>
-                        </svg>
-                    </Button>
-
-                    <Form.Group as={Row} className="mb3">
-                        <Form.Label htmlFor="Select">Select Constraints</Form.Label>
-
-
-                        {formConstraints.map((form, index) => {
-                            return (
-                                <MDBInputGroup key={index} className='mb-3'>
-                                    <Button onClick={() => removeConstraints(index)}
-                                            className='remove-btn rounded-circle' color="secondery" floating
-                                            tag='a'>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                             fill="currentColor" className="bi bi-trash"
-                                             viewBox="0 0 16 16">
+                                    <Button className='submit-btn rounded-circle' onClick={submit} tag='a'>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                             fill="currentColor"
+                                             className="bi bi-send-fill" viewBox="0 0 16 16">
                                             <path
-                                                d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-                                            <path fill-rule="evenodd"
-                                                  d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                                d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z"/>
                                         </svg>
                                     </Button>
-                                    <input
-                                        className='form-constraints-control'
-                                        name='field'
-                                        placeholder='Field'
-                                        onChange={event => handleConstrainsFormChange(event, index)}
-                                        value={form.field}
-                                    /><b>=</b>
-                                    <input
-                                        className='form-constraints-control'
-                                        name='value'
-                                        placeholder='value'
-                                        onChange={event => handleConstrainsFormChange(event, index)}
-                                        value={form.value}
-                                    />
-                                    <input
-                                        className='form-constraints-control-short'
-                                        name='operator'
-                                        placeholder='op'
-                                        onChange={event => handleConstrainsFormChange(event, index)}
-                                        value={form.operator}
-                                    />
-                                    <input
-                                        className='form-constraints-control-short'
-                                        name='amount'
-                                        placeholder='amount'
-                                        onChange={event => handleConstrainsFormChange(event, index)}
-                                        value={form.amount}
-                                    />
-                                </MDBInputGroup>
-                            );
-                        })}
-                    </Form.Group>
-                    <Button className='add-btn rounded-circle' onClick={addConstraints} floating tag='a'>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
-                             className="bi bi-plus-circle-fill" viewBox="0 0 16 16">
-                            <path
-                                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"/>
-                        </svg>
-                    </Button>
+                                </ButtonGroup>
+                            </Form>
+                        </Col>
+                        <Col sm={5}>
+                            <div>{query !== '' ?
+                                <div><br/><h3>Your requested query</h3> <br/>{query}<br/><br/>
+                                    <ShowQueryTable data={originalQueryResults}
+                                                    selectedFields={getSelectedFields()}></ShowQueryTable>
+                                </div> : ''}</div>
+                        </Col>
+                    </Row>
+                </Container>
 
 
-                    <ButtonGroup className="me-2">
-                        <Button className='set-default-btn rounded-circle' onClick={setDefault} tag='a'>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                 fill="currentColor"
-                                 className="bi bi-shuffle" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd"
-                                      d="M0 3.5A.5.5 0 0 1 .5 3H1c2.202 0 3.827 1.24 4.874 2.418.49.552.865 1.102 1.126 1.532.26-.43.636-.98 1.126-1.532C9.173 4.24 10.798 3 13 3v1c-1.798 0-3.173 1.01-4.126 2.082A9.624 9.624 0 0 0 7.556 8a9.624 9.624 0 0 0 1.317 1.918C9.828 10.99 11.204 12 13 12v1c-2.202 0-3.827-1.24-4.874-2.418A10.595 10.595 0 0 1 7 9.05c-.26.43-.636.98-1.126 1.532C4.827 11.76 3.202 13 1 13H.5a.5.5 0 0 1 0-1H1c1.798 0 3.173-1.01 4.126-2.082A9.624 9.624 0 0 0 6.444 8a9.624 9.624 0 0 0-1.317-1.918C4.172 5.01 2.796 4 1 4H.5a.5.5 0 0 1-.5-.5z"/>
-                                <path
-                                    d="M13 5.466V1.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192zm0 9v-3.932a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192z"/>
-                            </svg>
-                        </Button>
-                        <Button className='remove-btn rounded-circle' onClick={reset} tag='a'>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                 fill="currentColor" className="bi bi-trash" viewBox="0 0 16 16">
-                                <path
-                                    d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-                                <path fill-rule="evenodd"
-                                      d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
-                            </svg>
-                        </Button>
-                        <Button className='submit-btn rounded-circle' onClick={submit} tag='a'>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                 fill="currentColor"
-                                 className="bi bi-send-fill" viewBox="0 0 16 16">
-                                <path
-                                    d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z"/>
-                            </svg>
-                        </Button>
-                    </ButtonGroup>
-                </Form>
-            </Col>
-            <Col sm={5}>
+                <br/>
+                <br/>
+                <div>{err !== '' ? "Error: " + err : ''}</div>
+                <br/>
                 <div>{query !== '' ?
-                    <div><br/><h3>Your requested query</h3> <br/>{query}<br/><br/>
-                        <ShowQueryTable data={originalQueryResults}
-                                        selectedFields={getSelectedFields()}></ShowQueryTable></div> : ''}</div>
-            </Col>
-        </Row>
-</Container>
-
-
-    <br/>
-    <br/>
-    <div>{err !== '' ? "Error: " + err : ''}</div>
-    <br/>
-    <div>{query !== '' ?
-        <>
-        <h3>We found some minimal refinements:</h3>
-        {refinements.map(function (ref, i) {
-            return <><p>{i}: {ref['query']} <br/><b>Similarity to Original
-                Query: {ref['distance_to_original']}</b><br/></p><ShowQueryTable
-                data={ref['results']} selectedFields={getSelectedFields()}></ShowQueryTable></>;
-        })}</>:''}
-    </div>
-</div>
-</div>
-)
-    ;
+                    <>
+                        <h3>We found some minimal refinements:</h3>
+                        {refinements.map(function (ref, i) {
+                            return <><p>{i}: {ref['query']} <br/><b>Similarity to Original
+                                Query: {ref['distance_to_original']}</b><br/></p><ShowQueryTable
+                                data={ref['results']} selectedFields={getSelectedFields()}></ShowQueryTable></>;
+                        })}</> : ''}
+                </div>
+            </div>
+        </div>
+    )
+        ;
 }
 
 export default QueryForm;

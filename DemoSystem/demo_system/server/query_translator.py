@@ -59,11 +59,12 @@ def set_constraints_to_dict_template(constraints: List, template: Dict):
     fairness_constraints: list = template['fairness_constraints']
 
     for con in constraints:
-        all_sensitive_attributes.append(con['field'])
-        fairness_constraint = {"sensitive_attributes": {con['field']: con['value']},
+        all_sensitive_attributes += [group['field'] for group in con['groups']]
+        fairness_constraint = {"sensitive_attributes": {group['field']: group['value'] for group in con['groups']},
                                "symbol": con['operator'],
                                "number": int(con['amount'])}
         fairness_constraints.append(fairness_constraint)
+    print(template)
     return template
 
 
