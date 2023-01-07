@@ -7,6 +7,7 @@ import HeaderNavBar from "./components/HeaderNavBar";
 import {
     BrowserRouter as Router, Route, Link, Routes, BrowserRouter
 } from "react-router-dom";
+import QueryRefinement from "./components/QueryRefinement";
 
 const App = props => {
     return (<html lang="en">
@@ -28,15 +29,7 @@ const App = props => {
             integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
             crossorigin="anonymous"></script>
     <div>
-        <HeaderNavBar></HeaderNavBar>
-        <BrowserRouter>
-            <Routes>
-                <Route path="/" element={<QueryForm/>}>
-                    <Route index element={<QueryForm/>}/>
-                    <Route path="queries" element={<QueryForm/>}/>
-                </Route>
-            </Routes>
-        </BrowserRouter>
+        <QueryRefinement/>
     </div>
     </body>
     </html>);

@@ -1,3 +1,5 @@
+@import "tags.css";
+
 form {
     display: flex;
     flex-direction: column;
@@ -14,6 +16,7 @@ HeaderNavBar {
 
 .QueryRefinement {
     color: #616f80 !important;
+    padding: 10px;
 }
 
 .form-constraints-control-short {
@@ -44,13 +47,19 @@ input:-webkit-autofill:active{
     width: 100%;
 }
 
-input, select{
+input, select {
     background: #4d4d50 !important;
     color: #ffffff !important;
     border-color: #2d2c2c !important;
     margin: 3px !important;
 }
-
+.ant-select-selector {
+    background: #4d4d50 !important;
+    color: #ffffff !important;
+    border-color: #2d2c2c !important;
+    margin: 3px !important;
+    --bs-dropdown-bg: #4d4d50 !important;
+}
 
 .remove-btn {
     color: #ef2020 !important;

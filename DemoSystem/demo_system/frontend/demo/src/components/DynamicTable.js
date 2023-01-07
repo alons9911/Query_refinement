@@ -6,7 +6,8 @@ function DynamicTable(props) {
 // get table column
     const column = Object.keys(props.data[0]).sort();
     const selectedFields = props.selectedFields;
-
+    const removedRows = props.removedFromOriginal !== undefined ? props.removedFromOriginal : [];
+    console.log(removedRows);
     // get table heading data
     const ThData = () => {
         return (column.includes('id') ? [<th key={'id'}>id</th>] : []).concat(
@@ -19,24 +20,34 @@ function DynamicTable(props) {
     const tdData = () => {
 
 
-        return props.data.map((data) => {
+        return props.data.concat(props.removedFromOriginal).sort((a, b) => a['id'] - b['id']).map((row) => {
             return (
-                <tr class={data['new_result'] ? "active-row" : "not-active-row"}>
-                    {
-                        (column.includes('id') ? [<td>{data['id']}</td>] : []).concat(
-                            column.map((v, index) => {
-                                return selectedFields.includes(v) ? <td>{data[v]}</td> : ''
-                            })
-                        )
-                    }
-                </tr>
+                props.data.includes(row) ?
+                    <tr class={row['new_result'] ? "active-row" : "not-active-row"}>
+                        {
+                            (column.includes('id') ? [<td>{row['id']}</td>] : []).concat(
+                                column.map((v, index) => {
+                                    return selectedFields.includes(v) ? <td>{row[v]}</td> : ''
+                                })
+                            )
+                        }
+                    </tr> :
+                    <tr className="removed-row">
+                        {
+                            (column.includes('id') ? [<td>{row['id']}</td>] : []).concat(
+                                column.map((v, index) => {
+                                    return selectedFields.includes(v) ? <td>{row[v]}</td> : ''
+                                })
+                            )
+                        }
+                    </tr>
             )
         })
     }
 
 
     return (
-        <div className="query-table-container">
+        <div className={props.className}>
             <table className="query-table">
                 <thead>
                 <tr>{ThData()}</tr>

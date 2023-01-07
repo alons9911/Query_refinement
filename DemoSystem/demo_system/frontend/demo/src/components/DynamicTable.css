@@ -30,3 +30,9 @@
     font-weight: bold;
     color: #009879;
 }
+
+.query-table tbody tr.removed-row {
+    font-weight: bold;
+    color: #d51b1b;
+    text-decoration: line-through;
+}

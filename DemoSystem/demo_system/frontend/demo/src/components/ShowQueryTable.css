@@ -2,8 +2,14 @@ input[type=checkbox]:checked {
   background-color: #137ae8 !important;
 }
 
-.query-table-container {
+.requested-query-dynamic-table {
   overflow: scroll;
   max-height: 250px !important;
-  width: 90vh !important;
+  max-width: 90vh !important;
+}
+
+.refinements-dynamic-table {
+  overflow: scroll;
+  max-height: 250px !important;
+  max-width: 180vh !important;
 }

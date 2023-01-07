@@ -13,8 +13,8 @@ function HeaderNavBar() {
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link href="/queries">Queries</Nav.Link>
-            <Nav.Link href="/pricing">Advanced</Nav.Link>
+            <Nav.Link href="/queries">Set Query</Nav.Link>
+            <Nav.Link href="/advanced">Show Refinements</Nav.Link>
             <NavDropdown title="Dropdown" id="collasible-nav-dropdown" hidden={true}>
               <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
               <NavDropdown.Item href="#action/3.2">

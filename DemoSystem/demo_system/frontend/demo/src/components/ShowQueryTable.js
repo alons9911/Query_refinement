@@ -25,7 +25,10 @@ function ShowQueryTable(props) {
             {checked ?
                 props.data.length === 0 ?
                     "No Results Found" :
-                    <DynamicTable data={props.data} selectedFields={props.selectedFields}/>
+                    <DynamicTable className={props.containerClassName}
+                                  data={props.data}
+                                  removedFromOriginal={props.removedFromOriginal}
+                                  selectedFields={props.selectedFields}/>
                 : ''}
         </>
     )

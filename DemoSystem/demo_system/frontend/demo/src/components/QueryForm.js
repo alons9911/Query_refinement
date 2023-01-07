@@ -5,6 +5,7 @@ import {
     MDBBtn, MDBIcon,
     MDBInputGroup,
 } from 'mdb-react-ui-kit';
+import {MdClose} from "react-icons/md"
 
 
 import React, {useState} from 'react';
@@ -14,30 +15,71 @@ import {ButtonGroup, ButtonToolbar, Col, Row} from "react-bootstrap";
 import {FloatButton, Select} from "antd";
 import Container from "react-bootstrap/Container";
 
-function QueryForm() {
-    const [formFields, setFormFields] = useState([
-        {field: '', operator: '', value: ''},
-    ])
-    const [formConstraints, setFormConstraints] = useState([
-        {groups: [{field: '', value: ''}, {field: '', value: ''}], operator: '', amount: ''},
-    ])
-    const [table, setTable] = useState('compas-scores');
-    const [tableFields, setTableFields] = useState(["id", "sex", "juv_fel_count", "c_jail_out", "age", "age_cat", "c_arrest_date", "c_case_number",
-        "c-charge-desc", "c-days-from-compas", "c-offense-date", "c_charge_degree", "c_jail_in",
-        "compas_screening_date", "days_b_screening_arrest", "decile-score", "decile_score", "dob", "first", "is-recid",
-        "is-violent-recid", "juv_fel_count", "juv_misd_count", "juv_other_count", "last", "name", "num-r-cases",
-        "num-vr-cases", "priors_count", "r-case-number", "r-charge-degree", "r-charge-desc", "r-days-from-arrest",
-        "r-jail-in", "r-jail-out", "r-offense-date", "race", "score-text", "screening-date", "type-of-assessment",
-        "v-decile-score", "v-score-text", "v-screening-date", "v-type-of-assessment", "vr-case-number", "vr-charge-degree",
-        "vr-charge-desc", "vr-offense-date"]);
+function QueryForm({
+                       formFields, setFormFields,
+                       formConstraints, setFormConstraints,
+                       table, setTable,
+                       tableFields, setTableFields,
+                       query, setQuery,
+                       originalQueryResults, setOriginalQueryResults,
+                       refinements, setRefinements,
+                       err, setErr,
+                       optionalOperators
+                   }) {
 
-    const [query, setQuery] = useState('');
-    const [originalQueryResults, setOriginalQueryResults] = useState([]);
+    const sortByOprions = ['Jaccard Similarity', 'Unlikely Changed Fields', 'Query Fields Constraints']
+    const [selectedSortBy, setSelectedSortBy] = useState(sortByOprions[0]);
+    const [unlikelyChangedFields, setUnlikelyChangedFields] = useState([]);
 
-    const [refinements, setRefinements] = useState([]);
-    const [err, setErr] = useState('');
+    const sendSortRefirementsRequest = async (unlikelyFields) => {
+        const sort_refinements_response = await fetch('http://127.0.0.1:5000/sort_refinements', {
+            method: 'POST',
+            body: JSON.stringify({
+                'conds': formFields,
+                'table_name': table,
+                'refinements': refinements,
+                'sorting_func': selectedSortBy,
+                'unlikely_changed_fields': unlikelyFields
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+            },
+        });
 
-    const optionalOperators = ['>', '>=', '=', '<', '<=', 'IN']
+        if (!sort_refinements_response.ok) {
+            throw new Error(`Error! status: ${sort_refinements_response.status}`);
+        }
+        const sorted_refinements = await sort_refinements_response.text();
+        console.log('sorted refinements: ', JSON.parse(sorted_refinements));
+        setRefinements(JSON.parse(sorted_refinements));
+    }
+    const handleSortBySelection = async (event) => {
+        setSelectedSortBy(event);
+        await sendSortRefirementsRequest([]);
+    }
+
+    // Add or remove tags by using the key
+    const handleUnlikelyChangedFields = async event => {
+        if (event.key === "Enter" && event.target.value !== "" && unlikelyChangedFields.length < 10) {
+            let fields = [...unlikelyChangedFields];
+            setUnlikelyChangedFields([...unlikelyChangedFields, event.target.value]);
+            await sendSortRefirementsRequest([...fields, event.target.value]);
+            event.target.value = "";
+        } else if (event.key === "Backspace" && unlikelyChangedFields.length && event.target.value === 0) {
+            const unlikelyChangedFieldsCopy = [...unlikelyChangedFields];
+            unlikelyChangedFieldsCopy.pop();
+            event.preventDefault();
+            setUnlikelyChangedFields(unlikelyChangedFieldsCopy);
+        }
+    };
+
+    //Remove tags by clicking the cross sign
+    const removeUnlikelyChangedFields = async index => {
+        setUnlikelyChangedFields([...unlikelyChangedFields.filter(field => unlikelyChangedFields.indexOf(field) !== index)]);
+        await sendSortRefirementsRequest(unlikelyChangedFields.filter(field => unlikelyChangedFields.indexOf(field) !== index));
+    };
+
 
     const handleFieldsFormChange = (event, index) => {
         let data = [...formFields];
@@ -86,8 +128,16 @@ function QueryForm() {
                     Accept: 'application/json',
                 },
             });
+            const save_selected_fields_response = await fetch('http://127.0.0.1:5000/save_selected_fields', {
+                method: 'POST',
+                body: JSON.stringify({'selected_fields': getSelectedFields()}),
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                },
+            });
 
-            if (!build_query_response.ok) {
+            if (!(build_query_response.ok && save_selected_fields_response.ok)) {
                 throw new Error(`Error! status: ${build_query_response.status}`);
             }
 
@@ -109,9 +159,9 @@ function QueryForm() {
             if (!run_query_response.ok) {
                 throw new Error(`Error! status: ${run_query_response.status}`);
             }
-            const refinements = await run_query_response.text();
-            console.log('query is: ', JSON.parse(refinements));
-            setRefinements(JSON.parse(refinements));
+            const refs = await run_query_response.text();
+            console.log('query is: ', JSON.parse(refs));
+            setRefinements(JSON.parse(refs));
 
 
         } catch (err) {
@@ -172,8 +222,7 @@ function QueryForm() {
     }
 
 
-    const getSelectedFields = () => formFields.map(f => f.field).concat(formConstraints.map(f => f.field));
-
+    const getSelectedFields = () => formFields.map(f => f.field).concat(formConstraints.map(f => f['groups'].map(g => g.field)).flat(1));
     return (
         <div className="QueryRefinement">
             <div className="QueryForm">
@@ -296,20 +345,22 @@ function QueryForm() {
                                                             value={group.value}
                                                         />
                                                         {form.groups.length !== 1 ?
-                                                        <Button onClick={() => removeConstraintGroup(index, groupIndex)}
+                                                            <Button
+                                                                onClick={() => removeConstraintGroup(index, groupIndex)}
                                                                 className='remove-btn rounded-circle' color="secondery"
                                                                 floating
                                                                 tag='a'>
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16"
-                                                                 height="16" fill="currentColor"
-                                                                 className="bi bi-dash-lg" viewBox="0 0 16 16">
-                                                                <path fill-rule="evenodd"
-                                                                      d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8Z"/>
-                                                            </svg>
-                                                        </Button> : ''
-                                                    }
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                                     height="16" fill="currentColor"
+                                                                     className="bi bi-dash-lg" viewBox="0 0 16 16">
+                                                                    <path fill-rule="evenodd"
+                                                                          d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8Z"/>
+                                                                </svg>
+                                                            </Button> : ''
+                                                        }
                                                     </>))}
-                                                <Button className='add-btn rounded-circle' onClick={()=>addConstraintsGroup(index)}
+                                                <Button className='add-btn rounded-circle'
+                                                        onClick={() => addConstraintsGroup(index)}
                                                         floating tag='a'>
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                          fill="currentColor"
@@ -379,8 +430,10 @@ function QueryForm() {
                         <Col sm={5}>
                             <div>{query !== '' ?
                                 <div><br/><h3>Your requested query</h3> <br/>{query}<br/><br/>
-                                    <ShowQueryTable data={originalQueryResults}
-                                                    selectedFields={getSelectedFields()}></ShowQueryTable>
+                                    <ShowQueryTable containerClassName={"requested-query-dynamic-table"}
+                                                    data={originalQueryResults}
+                                                    selectedFields={getSelectedFields()}
+                                                    removedFromOriginal={[]}></ShowQueryTable>
                                 </div> : ''}</div>
                         </Col>
                     </Row>
@@ -394,11 +447,59 @@ function QueryForm() {
                 <div>{query !== '' ?
                     <>
                         <h3>We found some minimal refinements:</h3>
-                        {refinements.map(function (ref, i) {
-                            return <><p>{i}: {ref['query']} <br/><b>Similarity to Original
-                                Query: {ref['distance_to_original']}</b><br/></p><ShowQueryTable
-                                data={ref['results']} selectedFields={getSelectedFields()}></ShowQueryTable></>;
-                        })}</> : ''}
+                        <Form onSubmit={submit}>
+                            <Form.Group as={Row} className="mb3">
+                                <Row>
+                                    <Form.Label htmlFor="Select">Sort By</Form.Label>
+                                    <Select className="sort-by-select"
+                                            defaultValue={selectedSortBy}
+                                            options={sortByOprions.map((o) => {
+                                                return {value: o, label: o}
+                                            })}
+                                            onChange={handleSortBySelection}
+                                    >
+                                    </Select>
+                                </Row>
+                            </Form.Group>
+                            <br/>
+                            {selectedSortBy === 'Unlikely Changed Fields' ?
+                                <Form.Group as={Row} className="mb3">
+                                    <Row>
+                                        <Form.Label htmlFor="Select">Please choose the fields which shouldn't be change
+                                            by order</Form.Label>
+                                        <div className="tags">
+                                            {unlikelyChangedFields.map((field, index) => (
+                                                <div className="single-tag" key={index}>
+                                                    <span>{field}</span>
+                                                    <i
+                                                        onClick={() => removeUnlikelyChangedFields(index)}
+                                                    >
+                                                        <MdClose/>
+                                                    </i>
+                                                </div>
+                                            ))}
+
+                                            <input
+                                                className="unlikely-changed-fields-input"
+                                                type="text"
+                                                onKeyDown={event => handleUnlikelyChangedFields(event)}
+                                                placeholder="Write some field and press enter"
+                                            />
+                                        </div>
+                                    </Row>
+                                </Form.Group>
+                                : ''}
+                            {refinements.map(function (ref, i) {
+                                return <><p>{i}: {ref['query']} <br/><b>Similarity to Original
+                                    Query: {ref['distance_to_original']}</b><br/></p>
+                                    <ShowQueryTable containerClassName={"refinements-dynamic-table"}
+                                                    data={ref['results']['query_results']}
+                                                    selectedFields={getSelectedFields()}
+                                                    removedFromOriginal={ref['results']['removed_from_original']}></ShowQueryTable></>;
+                            })}
+                        </Form>
+                        <br/><br/><br/><br/><br/><br/><br/>
+                    </> : ''}
                 </div>
             </div>
         </div>

@@ -89,7 +89,7 @@ def translate_dict_query(table_name: str, dict_query: Dict):
     return SQL_TEMPLATE.format(table_name=table_name, table_char=table_char, conds=' AND '.join(conds))
 
 
-def translate_minimal_refinement(minimal_refinement: List[int], dict_query: Dict[Any, None], table_name):
+def translate_minimal_refinement_to_dict(minimal_refinement: List[int], dict_query: Dict[Any, None], table_name):
     selection_numeric_attributes, selection_categorical_attributes, _ = get_fields_from_dict_query(dict_query)
 
     # assert len(minimal_refinement) == len(selection_categorical_attributes) + len(selection_numeric_attributes)
@@ -110,11 +110,15 @@ def translate_minimal_refinement(minimal_refinement: List[int], dict_query: Dict
                 additional_options.append(option)
             index += 1
         dict_query['selection_categorical_attributes'][attr] = selected_options + additional_options
-    return translate_dict_query(table_name, dict_query)
+    return dict_query
+
+def translate_minimal_refinement(minimal_refinement: List[int], dict_query: Dict[Any, None], table_name):
+    return translate_dict_query(table_name, translate_minimal_refinement_to_dict(minimal_refinement, dict_query, table_name))
 
 
 def translate_minimal_refinements(minimal_refinements: List[List[int]], dict_query: Dict[Any, None], table_name):
-    return [translate_minimal_refinement(min_ref, copy.deepcopy(dict_query), table_name)
+    return [{"query_str": translate_minimal_refinement(min_ref, copy.deepcopy(dict_query), table_name),
+             "query_dict": translate_minimal_refinement_to_dict(min_ref, copy.deepcopy(dict_query), table_name)}
             for min_ref in minimal_refinements]
 
 

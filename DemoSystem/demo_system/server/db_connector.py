@@ -28,7 +28,7 @@ def get_query_results(query):
     if len(rows) > 0:
         keys = rows[0].keys()
         results = [{keys[i]: row[i] for i in range(len(keys))} for row in rows]
-    print(results)
+    #print(results)
     return results
 
 if __name__ == "__main__":
