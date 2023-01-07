@@ -444,63 +444,6 @@ function QueryForm({
                 <br/>
                 <div>{err !== '' ? "Error: " + err : ''}</div>
                 <br/>
-                <div>{query !== '' ?
-                    <>
-                        <h3>We found some minimal refinements:</h3>
-                        <Form onSubmit={submit}>
-                            <Form.Group as={Row} className="mb3">
-                                <Row>
-                                    <Form.Label htmlFor="Select">Sort By</Form.Label>
-                                    <Select className="sort-by-select"
-                                            defaultValue={selectedSortBy}
-                                            options={sortByOprions.map((o) => {
-                                                return {value: o, label: o}
-                                            })}
-                                            onChange={handleSortBySelection}
-                                    >
-                                    </Select>
-                                </Row>
-                            </Form.Group>
-                            <br/>
-                            {selectedSortBy === 'Unlikely Changed Fields' ?
-                                <Form.Group as={Row} className="mb3">
-                                    <Row>
-                                        <Form.Label htmlFor="Select">Please choose the fields which shouldn't be change
-                                            by order</Form.Label>
-                                        <div className="tags">
-                                            {unlikelyChangedFields.map((field, index) => (
-                                                <div className="single-tag" key={index}>
-                                                    <span>{field}</span>
-                                                    <i
-                                                        onClick={() => removeUnlikelyChangedFields(index)}
-                                                    >
-                                                        <MdClose/>
-                                                    </i>
-                                                </div>
-                                            ))}
-
-                                            <input
-                                                className="unlikely-changed-fields-input"
-                                                type="text"
-                                                onKeyDown={event => handleUnlikelyChangedFields(event)}
-                                                placeholder="Write some field and press enter"
-                                            />
-                                        </div>
-                                    </Row>
-                                </Form.Group>
-                                : ''}
-                            {refinements.map(function (ref, i) {
-                                return <><p>{i}: {ref['query']} <br/><b>Similarity to Original
-                                    Query: {ref['distance_to_original']}</b><br/></p>
-                                    <ShowQueryTable containerClassName={"refinements-dynamic-table"}
-                                                    data={ref['results']['query_results']}
-                                                    selectedFields={getSelectedFields()}
-                                                    removedFromOriginal={ref['results']['removed_from_original']}></ShowQueryTable></>;
-                            })}
-                        </Form>
-                        <br/><br/><br/><br/><br/><br/><br/>
-                    </> : ''}
-                </div>
             </div>
         </div>
     )
