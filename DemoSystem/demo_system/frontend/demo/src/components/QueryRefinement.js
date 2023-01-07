@@ -54,7 +54,7 @@ function QueryRefinement(props) {
         window.localStorage.setItem('tableFields', JSON.stringify(tableFields));
     }, [tableFields]);
 
-    const [query, setQuery] = useState('');
+    const [query, setQuery] = useState({});
     useEffect(() => {
         setQuery(JSON.parse(window.localStorage.getItem('query')));
 

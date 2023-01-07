@@ -45,7 +45,7 @@ def set_fields_to_dict_query(fields: List, dict_query: Dict):
 
     for field in fields:
         if field['operator'] in ['in', 'IN', 'In']:
-            categorical_conds[field['field'].replace("_", "-")] = json.loads(field['value'])
+            categorical_conds[field['field'].replace("_", "-")] = json.loads(field['value'].replace('(', '[').replace(')', ']'))
         else:
             numeric_conds[field['field'].replace("_", "-")] = [field['operator'], float(field['value']), 1]
     return dict_query
@@ -89,6 +89,41 @@ def translate_dict_query(table_name: str, dict_query: Dict):
     return SQL_TEMPLATE.format(table_name=table_name, table_char=table_char, conds=' AND '.join(conds))
 
 
+def create_str_query_as_dict(table_name: str, dict_query: Dict, original_query: Dict):
+    table_char = table_name[0]
+
+    selection_numeric_attributes, selection_categorical_attributes, _ = get_fields_from_dict_query(dict_query)
+    numeric_conds = dict_query['selection_numeric_attributes']
+    categorical_conds = dict_query['selection_categorical_attributes']
+
+    where_clauses = []
+
+    for attr in selection_numeric_attributes:
+        field = attr.replace('-', '_')
+        operator, value = numeric_conds[attr][0], numeric_conds[attr][1]
+        where_clauses.append({
+            'clause': [f"{table_char}.{field}", f"{operator}", f"{value}"],
+            'bold': not (attr in original_query['selection_numeric_attributes'] and
+                         original_query['selection_numeric_attributes'][attr][0] == operator and
+                         original_query['selection_numeric_attributes'][attr][1] == value)
+        })
+    for attr in selection_categorical_attributes:
+        field = attr.replace('-', '_')
+        categorical_conds[attr].sort()
+        values = '(' + ','.join([f"'{val}'" for val in categorical_conds[attr]]) + ')'
+        where_clauses.append({
+            'clause': [f"{table_char}.{field}", "IN", f"{values}"],
+            'bold': not (attr in original_query['selection_categorical_attributes'] and
+                         sorted(original_query['selection_categorical_attributes'][attr]) == sorted(categorical_conds[attr]))
+        })
+
+    return {
+        'select': "*",
+        'from': f"'{table_name}' AS {table_char}",
+        'where': where_clauses
+    }
+
+
 def translate_minimal_refinement_to_dict(minimal_refinement: List[int], dict_query: Dict[Any, None], table_name):
     selection_numeric_attributes, selection_categorical_attributes, _ = get_fields_from_dict_query(dict_query)
 
@@ -112,14 +147,19 @@ def translate_minimal_refinement_to_dict(minimal_refinement: List[int], dict_que
         dict_query['selection_categorical_attributes'][attr] = selected_options + additional_options
     return dict_query
 
+
 def translate_minimal_refinement(minimal_refinement: List[int], dict_query: Dict[Any, None], table_name):
-    return translate_dict_query(table_name, translate_minimal_refinement_to_dict(minimal_refinement, dict_query, table_name))
+    return translate_dict_query(table_name,
+                                translate_minimal_refinement_to_dict(minimal_refinement, dict_query, table_name))
 
 
 def translate_minimal_refinements(minimal_refinements: List[List[int]], dict_query: Dict[Any, None], table_name):
-    return [{"query_str": translate_minimal_refinement(min_ref, copy.deepcopy(dict_query), table_name),
-             "query_dict": translate_minimal_refinement_to_dict(min_ref, copy.deepcopy(dict_query), table_name)}
-            for min_ref in minimal_refinements]
+    refinements = [{"query_str": translate_minimal_refinement(min_ref, copy.deepcopy(dict_query), table_name),
+                    "query_dict": translate_minimal_refinement_to_dict(min_ref, copy.deepcopy(dict_query), table_name)}
+                   for min_ref in minimal_refinements]
+    for ref in refinements:
+        ref["str_query_as_dict"] = create_str_query_as_dict(table_name, ref["query_dict"], dict_query)
+    return refinements
 
 
 def build_query(conds, table_name):
@@ -129,6 +169,7 @@ def build_query(conds, table_name):
             c['value'] = '(' + c['value'][1:-1] + ')'
     conds = [f"{table_char}.{c['field']} {c['operator']} {c['value']}" for c in conds]
     return SQL_TEMPLATE.format(table_name=table_name, table_char=table_char, conds=' AND '.join(conds))
+
 
 if __name__ == "__main__":
     print(translate_dict_query("compas-scores", DICT_QUERY))

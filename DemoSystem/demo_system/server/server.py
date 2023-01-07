@@ -5,7 +5,8 @@ from flask import Flask, request
 from DemoSystem.demo_system.minimal_refinement import FindMinimalRefinement
 from db_connector import get_query_results
 from query_translator import translate_minimal_refinements, build_query, \
-    set_fields_to_dict_query, set_constraints_to_dict_template, translate_dict_query, get_fields_from_dict_query
+    set_fields_to_dict_query, set_constraints_to_dict_template, translate_dict_query, get_fields_from_dict_query, \
+    create_str_query_as_dict, translate_minimal_refinement_to_dict
 
 app = Flask(__name__)
 
@@ -90,7 +91,12 @@ def build():
     table_name = request.json['table_name']
     query = build_query(conds, table_name)
     results = get_query_results(query)
-    return json.dumps({'query': query, 'results': results})
+    query_dict = set_fields_to_dict_query(conds, QUERY_TEMPLATE)
+
+    return json.dumps({'query': query,
+                       'results': results,
+                       'str_query_as_dict': create_str_query_as_dict(table_name, query_dict, query_dict),
+})
 
 
 def build_results(query_results, original_results):
@@ -108,10 +114,10 @@ def unlikely_changed_fields_sorting_key(unlikely_fields, original_query_dict, nu
         for i in range(len(unlikely_fields)):
             field = unlikely_fields[i].replace('_', '-')
             if field in [f.replace('_', '-') for f in numeric_fields]:
-                if query['query_dict']['selection_numeric_attributes'][field] == original_query_dict['selection_numeric_attributes'][field]:
+                if set(query['query_dict']['selection_numeric_attributes'][field]) == set(original_query_dict['selection_numeric_attributes'][field]):
                     score += 10 ^ i
             else:
-                if query['query_dict']['selection_categorical_attributes'][field] == original_query_dict['selection_categorical_attributes'][field]:
+                if set(query['query_dict']['selection_categorical_attributes'][field]) == set(original_query_dict['selection_categorical_attributes'][field]):
                     score += 10 ^ i
         return score
     return inner
@@ -143,7 +149,10 @@ def sort_refinements():
 
     query_dict = set_fields_to_dict_query(conds, QUERY_TEMPLATE)
 
-    queries_with_results = [{'query': query['query'], 'query_dict': query['query_dict'], 'results': get_query_results(query['query'])} for query in refinements]
+    queries_with_results = [{'query': query['query'],
+                             'query_dict': query['query_dict'],
+                             'str_query_as_dict': query['str_query_as_dict'],
+                             'results': get_query_results(query['query'])} for query in refinements]
 
     original_query_str = translate_dict_query(table_name, query_dict)
     original_results = get_query_results(original_query_str)
@@ -167,7 +176,8 @@ def sort_refinements():
                 reverse=True)
     res = [{'query': query['query'],
             'query_dict': query['query_dict'],
-            'distance_to_original': get_jaccard_similarity_func(original_results)(query),
+            'str_query_as_dict': query['str_query_as_dict'],
+            'jaccard_similarity': get_jaccard_similarity_func(original_results)(query),
             'results': build_results(query['results'], original_results)} for query in queries_with_results]
     return res
 
@@ -198,7 +208,10 @@ def run_query():
     original_query_str = translate_dict_query(table_name, query_dict)
     original_results = get_query_results(original_query_str)
 
-    queries_with_results = [{'query': query['query_str'], 'query_dict': query['query_dict'], 'results': get_query_results(query['query_str'])} for query in queries]
+    queries_with_results = [{'query': query['query_str'],
+                             'query_dict': query['query_dict'],
+                             'str_query_as_dict': query['str_query_as_dict'],
+                             'results': get_query_results(query['query_str'])} for query in queries]
 
     queries_with_results.sort(
         key=get_jaccard_similarity_func(original_results),
@@ -206,7 +219,8 @@ def run_query():
 
     res = [{'query': query['query'],
             'query_dict': query['query_dict'],
-            'distance_to_original': get_jaccard_similarity_func(original_results)(query),
+            'str_query_as_dict': query['str_query_as_dict'],
+            'jaccard_similarity': get_jaccard_similarity_func(original_results)(query),
             'original_results': original_results,
             'results': build_results(query['results'], original_results)} for query in queries_with_results]
 

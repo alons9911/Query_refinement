@@ -14,6 +14,7 @@ import HeaderNavBar from "./HeaderNavBar";
 import {ButtonGroup, ButtonToolbar, Col, Row} from "react-bootstrap";
 import {FloatButton, Select} from "antd";
 import Container from "react-bootstrap/Container";
+import QueryView from "./QueryView";
 
 function QueryForm({
                        formFields, setFormFields,
@@ -143,7 +144,7 @@ function QueryForm({
 
             const result = await build_query_response.text();
             console.log('query is: ', result);
-            setQuery(JSON.parse(result)["query"]);
+            setQuery(JSON.parse(result)["str_query_as_dict"]);
             setOriginalQueryResults(JSON.parse(result)["results"]);
 
 
@@ -220,7 +221,7 @@ function QueryForm({
         data[index]['groups'].splice(groupIndex, 1)
         setFormConstraints(data)
     }
-
+    console.log(query);
 
     const getSelectedFields = () => formFields.map(f => f.field).concat(formConstraints.map(f => f['groups'].map(g => g.field)).flat(1));
     return (
@@ -428,8 +429,8 @@ function QueryForm({
                             </Form>
                         </Col>
                         <Col sm={5}>
-                            <div>{query !== '' ?
-                                <div><br/><h3>Your requested query</h3> <br/>{query}<br/><br/>
+                            <div>{Object.keys(query).length !== 0 ?
+                                <div><br/><h3>Your requested query</h3> <br/><QueryView queryDict={query}/><br/><br/>
                                     <ShowQueryTable containerClassName={"requested-query-dynamic-table"}
                                                     data={originalQueryResults}
                                                     selectedFields={getSelectedFields()}

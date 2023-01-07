@@ -7,6 +7,7 @@ import {Row} from "react-bootstrap";
 import {Select} from "antd";
 import {MdClose} from "react-icons/md";
 import ShowQueryTable from "./ShowQueryTable";
+import QueryView from "./QueryView";
 
 
 class RefinementsViewer extends React.Component {
@@ -188,12 +189,14 @@ class RefinementsViewer extends React.Component {
                                 : ''}
                             <ol>
                             {refinements.map(function (ref, i) {
-                                return <><li>{ref['query']} <br/><b>Similarity to Original
-                                    Query: {ref['distance_to_original']}</b><br/></li>
+                                return <><li><QueryView queryDict={ref['str_query_as_dict']}/><br/>
+                                    <div className="align-center-div"><b>Jaccard Similarity to Original
+                                    Query: {ref['jaccard_similarity']}</b></div>
+                                    <br/></li>
                                     <ShowQueryTable containerClassName={"refinements-dynamic-table"}
                                                     data={ref['results']['query_results']}
                                                     selectedFields={selectedFields}
-                                                    removedFromOriginal={ref['results']['removed_from_original']}></ShowQueryTable></>;
+                                                    removedFromOriginal={ref['results']['removed_from_original']}></ShowQueryTable><br/><br/></>;
                             })}
                             </ol>
                         </Form>
