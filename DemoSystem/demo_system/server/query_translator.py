@@ -26,6 +26,7 @@ SQL_TEMPLATE = "SELECT * \nFROM '{table_name}' AS {table_char}\n" + \
                "WHERE {conds};"
 
 
+
 def get_fields_from_dict_query(dict_query: Dict):
     numeric_conds = dict_query['selection_numeric_attributes']
     categorical_conds = dict_query['selection_categorical_attributes']

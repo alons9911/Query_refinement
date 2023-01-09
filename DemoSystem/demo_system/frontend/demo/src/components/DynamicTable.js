@@ -12,7 +12,7 @@ function DynamicTable(props) {
     const ThData = () => {
         return (column.includes('id') ? [<th key={'id'}>id</th>] : []).concat(
             column.map((data, index) => {
-                return selectedFields.includes(data) ? <th key={data}>{data}</th> : ''
+                return (selectedFields === "*" || selectedFields.includes(data)) ? <th key={data}>{data}</th> : ''
             }))
     }
 
@@ -27,7 +27,7 @@ function DynamicTable(props) {
                         {
                             (column.includes('id') ? [<td>{row['id']}</td>] : []).concat(
                                 column.map((v, index) => {
-                                    return selectedFields.includes(v) ? <td>{row[v]}</td> : ''
+                                    return (selectedFields === "*" || selectedFields.includes(v)) ? <td>{row[v]}</td> : ''
                                 })
                             )
                         }
@@ -36,7 +36,7 @@ function DynamicTable(props) {
                         {
                             (column.includes('id') ? [<td>{row['id']}</td>] : []).concat(
                                 column.map((v, index) => {
-                                    return selectedFields.includes(v) ? <td>{row[v]}</td> : ''
+                                    return (selectedFields === "*" || selectedFields.includes(v)) ? <td>{row[v]}</td> : ''
                                 })
                             )
                         }

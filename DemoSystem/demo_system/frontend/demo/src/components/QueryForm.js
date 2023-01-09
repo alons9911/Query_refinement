@@ -1,6 +1,8 @@
 import './QueryForm.css';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Popover from 'react-bootstrap/Popover';
 import {
     MDBBtn, MDBIcon,
     MDBInputGroup,
@@ -15,6 +17,7 @@ import {ButtonGroup, ButtonToolbar, Col, Row} from "react-bootstrap";
 import {FloatButton, Select} from "antd";
 import Container from "react-bootstrap/Container";
 import QueryView from "./QueryView";
+import DynamicTable from "./DynamicTable";
 
 function QueryForm({
                        formFields, setFormFields,
@@ -31,6 +34,7 @@ function QueryForm({
     const sortByOprions = ['Jaccard Similarity', 'Unlikely Changed Fields', 'Query Fields Constraints']
     const [selectedSortBy, setSelectedSortBy] = useState(sortByOprions[0]);
     const [unlikelyChangedFields, setUnlikelyChangedFields] = useState([]);
+    const [DBPreview, setDBPreview] = useState(undefined);
 
     const sendSortRefirementsRequest = async (unlikelyFields) => {
         const sort_refinements_response = await fetch('http://127.0.0.1:5000/sort_refinements', {
@@ -101,7 +105,7 @@ function QueryForm({
     }
 
 
-    const setDefault = () => {
+    /*const setDefault = () => {
         let fields = [
             {field: 'juv_fel_count', operator: '>=', value: '4'},
             {field: 'decile_score', operator: '>=', value: '8'},
@@ -110,6 +114,22 @@ function QueryForm({
         let constraints = [
             {groups: [{field: 'race', value: 'African-American'}], operator: '>=', amount: '30'},
             {groups: [{field: 'sex', value: 'Male'}], operator: '>=', amount: '45'},
+        ]
+        setFormFields(fields);
+        setFormConstraints(constraints);
+    }*/
+
+    const setDefault = () => {
+        let fields = [
+            {field: 'G1', operator: '>=', value: '13'},
+            {field: 'G2', operator: '>=', value: '15'},
+            {field: 'G3', operator: '>=', value: '16'},
+            {field: 'higher', operator: 'IN', value: '["yes"]'},
+        ]
+        let constraints = [
+            {groups: [{field: 'internet', value: 'no'}], operator: '>=', amount: '5'},
+            {groups: [{field: 'address', value: 'R'}], operator: '>=', amount: '10'},
+            {groups: [{field: 'sex', value: 'F'}], operator: '>=', amount: '20'},
         ]
         setFormFields(fields);
         setFormConstraints(constraints);
@@ -221,7 +241,38 @@ function QueryForm({
         data[index]['groups'].splice(groupIndex, 1)
         setFormConstraints(data)
     }
-    console.log(query);
+
+    async function sendDBPreviewRequest(table) {
+        try {
+            const db_priview_response = await fetch('http://127.0.0.1:5000/get_db_preview', {
+                method: 'POST',
+                body: JSON.stringify({table_name: table}),
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                },
+            });
+
+            if (!db_priview_response.ok) {
+                throw new Error(`Error! status: ${db_priview_response.status}`);
+            }
+            const preview = await db_priview_response.text();
+            console.log('db preview is: ', JSON.parse(preview));
+            setDBPreview(JSON.parse(preview));
+
+
+        } catch (err) {
+            setErr(err.message);
+        }
+    }
+
+    const handleDBSelection = async (event) => {
+        setTable(event);
+        await sendDBPreviewRequest(event);
+    }
+
+    const optionalDBs = ["students", "compas-scores"];
+
 
     const getSelectedFields = () => formFields.map(f => f.field).concat(formConstraints.map(f => f['groups'].map(g => g.field)).flat(1));
     return (
@@ -254,10 +305,38 @@ function QueryForm({
                                     </Row>
                                     <Row>
                                         <Col xs={8}>
-                                            <Form.Select id="db-select">
-                                                <option>compas-scores</option>
-                                            </Form.Select>
-                                        </Col></Row>
+                                            <Select id="db-select" className="db-select"
+                                                    defaultValue={table}
+                                                    options={optionalDBs.map((o) => {
+                                                        return {value: o, label: o}
+                                                    })}
+                                                    onChange={handleDBSelection}
+                                            >
+                                            </Select>
+
+                                        </Col>
+                                        <Col xs={2}>
+                                            <OverlayTrigger trigger="click" placement="right"
+                                                            overlay={<Popover id="popover-basic" >
+                                                                <Popover.Header as="h3">DB Preview</Popover.Header>
+                                                                <Popover.Body>
+                                                                    <ShowQueryTable
+                                                                        containerClassName={"db-preview-dynamic-table"}
+                                                                        data={DBPreview}
+                                                                        selectedFields={"*"}
+                                                                        alwaysShow={true}
+                                                                        removedFromOriginal={[]}></ShowQueryTable>
+                                                                </Popover.Body>
+                                                            </Popover>}>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                                     fill="currentColor" className="bi bi-binoculars"
+                                                     viewBox="0 0 16 16">
+                                                    <path
+                                                        d="M3 2.5A1.5 1.5 0 0 1 4.5 1h1A1.5 1.5 0 0 1 7 2.5V5h2V2.5A1.5 1.5 0 0 1 10.5 1h1A1.5 1.5 0 0 1 13 2.5v2.382a.5.5 0 0 0 .276.447l.895.447A1.5 1.5 0 0 1 15 7.118V14.5a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 14.5v-3a.5.5 0 0 1 .146-.354l.854-.853V9.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v.793l.854.853A.5.5 0 0 1 7 11.5v3A1.5 1.5 0 0 1 5.5 16h-3A1.5 1.5 0 0 1 1 14.5V7.118a1.5 1.5 0 0 1 .83-1.342l.894-.447A.5.5 0 0 0 3 4.882V2.5zM4.5 2a.5.5 0 0 0-.5.5V3h2v-.5a.5.5 0 0 0-.5-.5h-1zM6 4H4v.882a1.5 1.5 0 0 1-.83 1.342l-.894.447A.5.5 0 0 0 2 7.118V13h4v-1.293l-.854-.853A.5.5 0 0 1 5 10.5v-1A1.5 1.5 0 0 1 6.5 8h3A1.5 1.5 0 0 1 11 9.5v1a.5.5 0 0 1-.146.354l-.854.853V13h4V7.118a.5.5 0 0 0-.276-.447l-.895-.447A1.5 1.5 0 0 1 12 4.882V4h-2v1.5a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5V4zm4-1h2v-.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5V3zm4 11h-4v.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5V14zm-8 0H2v.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5V14z"/>
+                                                </svg>
+                                            </OverlayTrigger>
+                                        </Col>
+                                    </Row>
                                 </Form.Group>
                                 <Form.Group as={Row} className="mb3">
                                     <Form.Label htmlFor="Select">Select Conditions</Form.Label>

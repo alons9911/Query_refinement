@@ -121,3 +121,8 @@ input, select {
     outline: none;
     box-shadow: none;
 }
+
+#popover-basic {
+    max-height: 800px;
+    max-width: 800px;
+}

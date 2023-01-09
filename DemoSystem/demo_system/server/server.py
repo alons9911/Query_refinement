@@ -12,7 +12,8 @@ app = Flask(__name__)
 
 QUERY_TEMPLATE = {
     "categorical_attributes": {
-        "c-charge-degree": ["F", "M", "O"]
+        "higher": ["yes", "no"],
+
     },
     "selection_numeric_attributes": {
     },
@@ -37,7 +38,7 @@ def hello_world():
     return "<p>Hello, World!</p>"
 
 
-data_file = r"dbs/compas-scores.csv"
+data_file = r"dbs/students.csv"
 
 
 def save_refinements(refinements):
@@ -83,6 +84,12 @@ def load_table():
 @app.get("/load_refinements")
 def load_refinements():
     return last_refinements
+
+@app.post("/get_db_preview")
+def get_db_preview():
+    table_name = request.json['table_name']
+    results = get_query_results(f"SELECT * FROM '{table_name}'")
+    return results
 
 
 @app.post("/build_query")

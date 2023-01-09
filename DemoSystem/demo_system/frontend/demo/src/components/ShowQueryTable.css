@@ -14,6 +14,12 @@ input[type=checkbox]:checked {
   max-width: 180vh !important;
 }
 
+.db-preview-dynamic-table{
+  overflow: scroll;
+  max-height: 250px !important;
+  max-width: 180vh !important;
+}
+
 .bold-clause {
   color: #2874fc !important;
 }

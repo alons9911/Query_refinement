@@ -29,7 +29,7 @@ function QueryRefinement(props) {
         window.localStorage.setItem('formConstraints', JSON.stringify(formConstraints));
     }, [formFields]);
 
-    const [table, setTable] = useState('compas-scores');
+    const [table, setTable] = useState('students');
     useEffect(() => {
         setTable(window.localStorage.getItem('table'));
 
@@ -38,14 +38,16 @@ function QueryRefinement(props) {
         window.localStorage.setItem('table', table);
     }, [table]);
 
-    const [tableFields, setTableFields] = useState(["id", "sex", "juv_fel_count", "c_jail_out", "age", "age_cat", "c_arrest_date", "c_case_number",
+    /*const [tableFields, setTableFields] = useState(["id", "sex", "juv_fel_count", "c_jail_out", "age", "age_cat", "c_arrest_date", "c_case_number",
         "c-charge-desc", "c-days-from-compas", "c-offense-date", "c_charge_degree", "c_jail_in",
         "compas_screening_date", "days_b_screening_arrest", "decile-score", "decile_score", "dob", "first", "is-recid",
         "is-violent-recid", "juv_fel_count", "juv_misd_count", "juv_other_count", "last", "name", "num-r-cases",
         "num-vr-cases", "priors_count", "r-case-number", "r-charge-degree", "r-charge-desc", "r-days-from-arrest",
         "r-jail-in", "r-jail-out", "r-offense-date", "race", "score-text", "screening-date", "type-of-assessment",
         "v-decile-score", "v-score-text", "v-screening-date", "v-type-of-assessment", "vr-case-number", "vr-charge-degree",
-        "vr-charge-desc", "vr-offense-date"]);
+        "vr-charge-desc", "vr-offense-date"]);*/
+
+    const [tableFields, setTableFields] = useState(["school", "sex", "age", "address", "famsize", "Pstatus", "Medu", "Fedu", "Mjob", "Fjob", "reason", "guardian", "traveltime", "studytime", "failures", "schoolsup", "famsup", "paid", "activities", "nursery", "higher", "internet", "romantic", "famrel", "freetime", "goout", "Dalc", "Walc", "health", "absences", "G1", "G2", "G3"]);
     useEffect(() => {
         setTableFields(JSON.parse(window.localStorage.getItem('tableFields')));
 
@@ -72,12 +74,7 @@ function QueryRefinement(props) {
     }, [originalQueryResults]);
 
     const [refinements, setRefinements] = useState([]);
-    useEffect(() => {
-            setRefinements(JSON.parse(window.localStorage.getItem('refinements')));
-    }, []);
-    useEffect(() => {
-        window.localStorage.setItem('refinements', JSON.stringify(refinements));
-    }, [refinements]);
+
     const [err, setErr] = useState('');
     useEffect(() => {
         setErr(JSON.parse(window.localStorage.getItem('err')));
