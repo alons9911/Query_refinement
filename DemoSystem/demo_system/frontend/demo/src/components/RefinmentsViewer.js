@@ -192,7 +192,7 @@ class RefinementsViewer extends React.Component {
                                     </Row>
                                 </Form.Group>
                                 : ''}
-                            <OverlayTrigger trigger="click" placement="right"
+                            <OverlayTrigger trigger="hover" placement="right"
                                             overlay={<Popover id="popover-basic">
                                                 <Popover.Header as="h3">Original Query</Popover.Header>
                                                 <Popover.Body>
