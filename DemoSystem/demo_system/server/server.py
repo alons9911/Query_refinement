@@ -30,6 +30,7 @@ last_refinements = []
 form_fields = []
 table = ''
 selected_fields = []
+original_str_query_as_dict = {}
 # -------- Saving state -----------
 
 
@@ -68,7 +69,8 @@ def load_refinements_viewer_state():
     return {'refinements': last_refinements,
             'table': table,
             'selected_fields': selected_fields,
-            'form_fields': form_fields}
+            'form_fields': form_fields,
+            'original_str_query_as_dict': original_str_query_as_dict}
 
 
 def save_table(table_name):
@@ -80,6 +82,13 @@ def save_table(table_name):
 def load_table():
     return table
 
+def save_original_str_query_as_dict(str_query_as_dict):
+    global original_str_query_as_dict
+    original_str_query_as_dict = str_query_as_dict
+
+@app.get("/load_original_str_query_as_dict")
+def load_original_query_dict():
+    return original_str_query_as_dict
 
 @app.get("/load_refinements")
 def load_refinements():
@@ -99,10 +108,12 @@ def build():
     query = build_query(conds, table_name)
     results = get_query_results(query)
     query_dict = set_fields_to_dict_query(conds, QUERY_TEMPLATE)
+    str_query_as_dict = create_str_query_as_dict(table_name, query_dict, query_dict)
+    save_original_str_query_as_dict(str_query_as_dict)
 
     return json.dumps({'query': query,
                        'results': results,
-                       'str_query_as_dict': create_str_query_as_dict(table_name, query_dict, query_dict),
+                       'str_query_as_dict': str_query_as_dict,
 })
 
 

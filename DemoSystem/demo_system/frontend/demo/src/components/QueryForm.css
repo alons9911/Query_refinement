@@ -60,6 +60,9 @@ input, select {
     margin: 3px !important;
     --bs-dropdown-bg: #4d4d50 !important;
 }
+Select {
+    margin-right: 10px !important;
+}
 
 .remove-btn {
     color: #ef2020 !important;
