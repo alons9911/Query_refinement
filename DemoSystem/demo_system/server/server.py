@@ -9,6 +9,8 @@ from query_translator import translate_minimal_refinements, build_query, \
     set_fields_to_dict_query, set_constraints_to_dict_template, translate_dict_query, get_fields_from_dict_query, \
     create_str_query_as_dict, translate_minimal_refinement_to_dict
 
+import pandas as pd
+
 app = Flask(__name__)
 
 QUERY_TEMPLATE = {
@@ -159,6 +161,65 @@ def get_sorting_key(primary_func, secondary_func):
         return primary_func(query), secondary_func(query)
     return inner
 
+
+def calculate_fairness_constraints_satisfaction(file, query_info, constraint_info):
+    data = pd.read_csv(file, index_col=False)
+
+    satisfaction_info = []
+
+    numeric_attributes = []
+    categorical_attributes = {}
+    selection_numeric_attributes = {}
+    selection_categorical_attributes = {}
+    if 'selection_numeric_attributes' in query_info:
+        selection_numeric_attributes = query_info['selection_numeric_attributes']
+        numeric_attributes = list(selection_numeric_attributes.keys())
+    if 'selection_categorical_attributes' in query_info:
+        selection_categorical_attributes = query_info['selection_categorical_attributes']
+        categorical_attributes = query_info['categorical_attributes']
+    selected_attributes = numeric_attributes + [x for x in categorical_attributes]
+
+    fairness_constraints = constraint_info['fairness_constraints']
+
+    pd.set_option('display.float_format', '{:.2f}'.format)
+
+
+    # get data selected
+    def select(row):
+        for att in selection_numeric_attributes:
+            if pd.isnull(row[att]):
+                return 0
+            if not eval(
+                    str(row[att]) + selection_numeric_attributes[att][0] + str(selection_numeric_attributes[att][1])):
+                return 0
+        for att in selection_categorical_attributes:
+            if pd.isnull(row[att]):
+                return 0
+            if row[att] not in selection_categorical_attributes[att]:
+                return 0
+        return 1
+
+    data['satisfy_selection'] = data[selected_attributes].apply(select, axis=1)
+    data_selected = data[data['satisfy_selection'] == 1]
+    # whether satisfy fairness constraint
+    for fc in fairness_constraints:
+        sensitive_attributes = fc['sensitive_attributes']
+        if 'all' in sensitive_attributes.keys() and len(sensitive_attributes) == 1:
+            satisfaction_info.append({'group': 'Result Size',
+                                      'amount': len(data_selected)})
+        else:
+            df1 = data_selected[list(sensitive_attributes.keys())]
+            df2 = pd.DataFrame([sensitive_attributes])
+            data_selected_satisfying_fairness_constraint = df1.merge(df2)
+            num = len(data_selected_satisfying_fairness_constraint)
+
+            group = f"( { 'AND '.join([f'{field} = {value}' for field, value in sensitive_attributes.items()])} )"
+            satisfaction_info.append({'group': group,
+                                     'amount': num})
+
+    return satisfaction_info
+
+
 @app.post("/sort_refinements")
 def sort_refinements():
     refinements = request.json.get('refinements')
@@ -218,9 +279,9 @@ def run_query():
     print("\n\n")
 
     query_dict = set_fields_to_dict_query(conds, QUERY_TEMPLATE)
-    c = set_constraints_to_dict_template(constraints, CONSTRAINTS_TEMPLATE)
+    cons = set_constraints_to_dict_template(constraints, CONSTRAINTS_TEMPLATE)
 
-    minimal_refinements, _, assign_to_provenance_num, _, _ = FindMinimalRefinement(data_file, query_dict, c)
+    minimal_refinements, _, assign_to_provenance_num, _, _ = FindMinimalRefinement(data_file, query_dict, cons)
     queries = translate_minimal_refinements(minimal_refinements, query_dict, table_name)
     print(str(queries))
 
@@ -242,8 +303,7 @@ def run_query():
             'str_query_as_dict': query['str_query_as_dict'],
             'jaccard_similarity': get_jaccard_similarity_func(original_results)(query),
             'original_results': original_results,
-            'cardinality_satisfaction': [{'constraint': 'address = Rural',
-                                          'amount': 10}],
+            'cardinality_satisfaction': calculate_fairness_constraints_satisfaction(data_file, query['query_dict'], cons),
             'results': build_results(query['results'], original_results)} for query in queries_with_results]
 
     ###

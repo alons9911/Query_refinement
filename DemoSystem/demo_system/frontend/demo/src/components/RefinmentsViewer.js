@@ -247,7 +247,10 @@ class RefinementsViewer extends React.Component {
                                         <li>
                                             <QueryView queryDict={ref['str_query_as_dict']}/><br/>
                                             <div className="align-center-div"><b>Result Similarity
-                                                Score: {ref['jaccard_similarity']}</b></div>
+                                                Score: {ref['jaccard_similarity']}</b><br/>
+                                                <>{ref['cardinality_satisfaction'].map((con) => <div>{con['group']} = {con['amount']}<br/></div>)}</>
+
+                                            </div>
                                             <br/></li>
                                     </Col>
                                     <Col sm={5}>
