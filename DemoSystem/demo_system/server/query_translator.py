@@ -60,6 +60,10 @@ def set_constraints_to_dict_template(constraints: List, template: Dict):
     fairness_constraints: list = template['fairness_constraints']
 
     for con in constraints:
+        for group in con['groups']:
+            if group['value'] == '*' and group['field'] == '*':
+                group['field'] = 'all'
+                group['value'] = 'yes'
         all_sensitive_attributes += [group['field'] for group in con['groups']]
         fairness_constraint = {"sensitive_attributes": {group['field']: group['value'] for group in con['groups']},
                                "symbol": con['operator'],

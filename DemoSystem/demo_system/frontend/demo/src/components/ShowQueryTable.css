@@ -1,5 +1,5 @@
 input[type=checkbox]:checked {
-  background-color: #137ae8 !important;
+  background-color: #8deebf !important;
 }
 
 .requested-query-dynamic-table {
@@ -25,7 +25,7 @@ input[type=checkbox]:checked {
 }
 
 .query-view {
-  border: 1px solid #4aeadc;
+  border: 3px solid #6ea259;
   border-radius: 5px;
 }
 

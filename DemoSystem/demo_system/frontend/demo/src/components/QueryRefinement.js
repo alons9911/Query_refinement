@@ -47,7 +47,7 @@ function QueryRefinement(props) {
         "v-decile-score", "v-score-text", "v-screening-date", "v-type-of-assessment", "vr-case-number", "vr-charge-degree",
         "vr-charge-desc", "vr-offense-date"]);*/
 
-    const [tableFields, setTableFields] = useState(["school", "sex", "age", "address", "famsize", "Pstatus", "Medu", "Fedu", "Mjob", "Fjob", "reason", "guardian", "traveltime", "studytime", "failures", "schoolsup", "famsup", "paid", "activities", "nursery", "higher", "internet", "romantic", "famrel", "freetime", "goout", "Dalc", "Walc", "health", "absences", "G1", "G2", "G3"]);
+    const [tableFields, setTableFields] = useState(["school", "sex", "age", "address", "famsize", "Pstatus", "Medu", "Fedu", "Mjob", "Fjob", "reason", "guardian", "traveltime", "studytime", "failures", "schoolsup", "famsup", "paid", "extraActivities", "nursery", "higherEdIntention", "internetAccess", "romantic", "famrel", "freetime", "goout", "Dalc", "Walc", "health", "absences", "grade1", "grade2", "grade3"]);
     useEffect(() => {
         setTableFields(JSON.parse(window.localStorage.getItem('tableFields')));
 

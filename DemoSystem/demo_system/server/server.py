@@ -4,6 +4,7 @@ from flask import Flask, request
 
 from DemoSystem.demo_system.minimal_refinement import FindMinimalRefinement
 from db_connector import get_query_results
+from json_decoder import Decoder
 from query_translator import translate_minimal_refinements, build_query, \
     set_fields_to_dict_query, set_constraints_to_dict_template, translate_dict_query, get_fields_from_dict_query, \
     create_str_query_as_dict, translate_minimal_refinement_to_dict
@@ -12,8 +13,8 @@ app = Flask(__name__)
 
 QUERY_TEMPLATE = {
     "categorical_attributes": {
-        "higher": ["yes", "no"],
-
+        "extraActivities": ["yes", "no"],
+        "age": ["15-16", "17-18", "19-20", "21-22"]
     },
     "selection_numeric_attributes": {
     },
@@ -149,7 +150,7 @@ def get_jaccard_similarity_func(original_results):
         intersection = set(original_results_strs).intersection(query_results_strs)
         if len(union) == 0:
             return 9999999
-        return len(intersection) / len(union)
+        return round(len(intersection) / len(union), ndigits=2)
     return inner
 
 
@@ -161,7 +162,7 @@ def get_sorting_key(primary_func, secondary_func):
 @app.post("/sort_refinements")
 def sort_refinements():
     refinements = request.json.get('refinements')
-    sorting_func = request.json.get('sorting_func', 'Jaccard Similarity')
+    sorting_func = request.json.get('sorting_func', 'Result Similarity')
     conds = request.json['conds']
     table_name = request.json['table_name']
 
@@ -175,11 +176,11 @@ def sort_refinements():
     original_query_str = translate_dict_query(table_name, query_dict)
     original_results = get_query_results(original_query_str)
 
-    if sorting_func == 'Jaccard Similarity':
+    if sorting_func == 'Change In Result':
         queries_with_results.sort(
             key=get_jaccard_similarity_func(original_results),
             reverse=True)
-    elif sorting_func == 'Unlikely Changed Fields':
+    elif sorting_func == 'Change In Selection Condition':
         unlikely_changed_fields = request.json.get('unlikely_changed_fields', [])
         numeric_fields, categorical_fields, _ = get_fields_from_dict_query(query_dict)
         if unlikely_changed_fields:
@@ -218,6 +219,7 @@ def run_query():
 
     query_dict = set_fields_to_dict_query(conds, QUERY_TEMPLATE)
     c = set_constraints_to_dict_template(constraints, CONSTRAINTS_TEMPLATE)
+
     minimal_refinements, _, assign_to_provenance_num, _, _ = FindMinimalRefinement(data_file, query_dict, c)
     queries = translate_minimal_refinements(minimal_refinements, query_dict, table_name)
     print(str(queries))
@@ -240,15 +242,19 @@ def run_query():
             'str_query_as_dict': query['str_query_as_dict'],
             'jaccard_similarity': get_jaccard_similarity_func(original_results)(query),
             'original_results': original_results,
+            'cardinality_satisfaction': [{'constraint': 'address = Rural',
+                                          'amount': 10}],
             'results': build_results(query['results'], original_results)} for query in queries_with_results]
 
     ###
 
     print("----- MINIMAL REFINEMENTS -----")
     print(str(res))
+    res = Decoder().decode(res)
     save_refinements(res)
     save_table(table_name)
     save_form_fields(conds)
+    print(len(res))
     return res
 
 

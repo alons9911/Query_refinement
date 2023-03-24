@@ -27,7 +27,6 @@ import pandas as pd
 import time
 from intbitset import intbitset
 import json
-from Algorithm import LatticeTraversal_2_2022405 as lt
 assign_to_provenance_num = 0
 
 
@@ -95,9 +94,11 @@ Get provenance expressions
         print("time of test_satisfying_rows = {}".format(time.time() - time1))
         data['satisfy'] = 0
         time2 = time.time()
-        all_relevant_attributes = sensitive_attributes + selected_attributes + \
-                                  ['protected_greater_than', 'protected_smaller_than', 'satisfy']
+        all_relevant_attributes = list(set(sensitive_attributes + selected_attributes + \
+                                  ['protected_greater_than', 'protected_smaller_than', 'satisfy']))
+        print(all_relevant_attributes)
         data = data[all_relevant_attributes]
+
         data = data.groupby(all_relevant_attributes, dropna=False, sort=False).size().reset_index(name='occurrence')
 
         def get_provenance_relax_only(row, fc_dic, fc):
@@ -134,8 +135,8 @@ Get provenance expressions
         print("time of test_satisfying_rows = {}".format(time.time() - time1))
         data['satisfy'] = 0
         time2 = time.time()
-        all_relevant_attributes = sensitive_attributes + selected_attributes + \
-                                  ['protected_greater_than', 'protected_smaller_than', 'satisfy']
+        all_relevant_attributes = list(set(sensitive_attributes + selected_attributes + \
+                                  ['protected_greater_than', 'protected_smaller_than', 'satisfy']))
         data = data[all_relevant_attributes]
         data = data.groupby(all_relevant_attributes, dropna=False, sort=False).size().reset_index(name='occurrence')
 
@@ -167,8 +168,8 @@ Get provenance expressions
         return fairness_constraints_provenance_greater_than, fairness_constraints_provenance_smaller_than, \
                data_rows_greater_than, data_rows_smaller_than, only_greater_than, only_smaller_than, contraction_threshold
 
-    all_relevant_attributes = sensitive_attributes + selected_attributes + \
-                              ['protected_greater_than', 'protected_smaller_than', 'satisfy']
+    all_relevant_attributes = list(set(sensitive_attributes + selected_attributes + \
+                              ['protected_greater_than', 'protected_smaller_than', 'satisfy']))
     data = data[all_relevant_attributes]
     data = data.groupby(all_relevant_attributes, dropna=False, sort=False).size().reset_index(name='occurrence')
 
@@ -2091,6 +2092,8 @@ def whether_satisfy_fairness_constraints(data, selected_attributes, sensitive_at
             if row[att] not in selection_categorical_attributes[att]:
                 return 0
         return 1
+
+    print(f"\n\n\n {selected_attributes}\n\n\n")
 
     data['satisfy_selection'] = data[selected_attributes].apply(select, axis=1)
     data_selected = data[data['satisfy_selection'] == 1]

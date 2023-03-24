@@ -27,7 +27,7 @@
 .unlikely-changed-fields-input{
     border: none;
     background: transparent !important;
-    width: 70%;
+    width: 100%;
 }
 
 input:focus{

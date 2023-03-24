@@ -31,7 +31,7 @@ function QueryForm({
                        optionalOperators
                    }) {
 
-    const sortByOprions = ['Jaccard Similarity', 'Unlikely Changed Fields', 'Query Fields Constraints']
+    const sortByOprions = ['Result Similarity', 'Unlikely Changed Fields', 'Query Fields Constraints']
     const [selectedSortBy, setSelectedSortBy] = useState(sortByOprions[0]);
     const [unlikelyChangedFields, setUnlikelyChangedFields] = useState([]);
     const [DBPreview, setDBPreview] = useState(undefined);
@@ -121,15 +121,15 @@ function QueryForm({
 
     const setDefault = () => {
         let fields = [
-            {field: 'G1', operator: '>=', value: '13'},
-            {field: 'G2', operator: '>=', value: '15'},
-            {field: 'G3', operator: '>=', value: '16'},
-            {field: 'higher', operator: 'IN', value: '["yes"]'},
+            {field: 'grade1', operator: '>=', value: '10'},
+            {field: 'grade2', operator: '>=', value: '10'},
+            {field: 'age', operator: 'IN', value: '["15-16","17-18"]'},
+            {field: 'extraActivities', operator: 'IN', value: '["yes"]'},
         ]
         let constraints = [
-            {groups: [{field: 'internet', value: 'no'}], operator: '>=', amount: '5'},
-            {groups: [{field: 'address', value: 'R'}], operator: '>=', amount: '10'},
-            {groups: [{field: 'sex', value: 'F'}], operator: '>=', amount: '20'},
+            {groups: [{field: 'address', value: 'Rural'}], operator: '>=', amount: '15'},
+            {groups: [{field: 'sex', value: 'F'}], operator: '>=', amount: '30'},
+            {groups: [{field: '*', value: '*'}], operator: '<=', amount: '100'},
         ]
         setFormFields(fields);
         setFormConstraints(constraints);
@@ -271,7 +271,11 @@ function QueryForm({
         await sendDBPreviewRequest(event);
     }
 
-    const optionalDBs = ["students", "compas-scores"];
+    const optionalDBs = ["students", "healthcare", "acs_income","compas-scores"];
+
+    if (DBPreview === undefined) {
+        sendDBPreviewRequest(table);
+    }
 
 
     const getSelectedFields = () => formFields.map(f => f.field).concat(formConstraints.map(f => f['groups'].map(g => g.field)).flat(1));
@@ -306,7 +310,7 @@ function QueryForm({
                                     <Row>
                                         <Col xs={8}>
                                             <OverlayTrigger trigger="click" placement="right"
-                                                            overlay={<Popover id="popover-basic" >
+                                                            overlay={<Popover id="popover-basic">
                                                                 <Popover.Header as="h3">DB Preview</Popover.Header>
                                                                 <Popover.Body>
                                                                     <ShowQueryTable
@@ -336,7 +340,7 @@ function QueryForm({
                                     </Row>
                                 </Form.Group>
                                 <Form.Group as={Row} className="mb3">
-                                    <Form.Label htmlFor="Select">Select Conditions</Form.Label>
+                                    <Form.Label htmlFor="Select">Selection conditions</Form.Label>
                                     {formFields.map((form, index) => {
                                         return (
                                             <MDBInputGroup key={index} className='mb-3'>
@@ -358,6 +362,7 @@ function QueryForm({
                                                     placeholder='Field'
                                                     onChange={event => handleFieldsFormChange(event, index)}
                                                     value={form.field}
+                                                    autoComplete="off"
                                                 />
                                                 <input
                                                     className='form-conditions-control-very-short'
@@ -365,6 +370,7 @@ function QueryForm({
                                                     placeholder='op'
                                                     onChange={event => handleFieldsFormChange(event, index)}
                                                     value={form.operator}
+                                                    autoComplete="off"
                                                 />
                                                 <input
                                                     className='form-conditions-control'
@@ -372,6 +378,7 @@ function QueryForm({
                                                     placeholder='value'
                                                     onChange={event => handleFieldsFormChange(event, index)}
                                                     value={form.value}
+                                                    autoComplete="off"
                                                 />
                                             </MDBInputGroup>
                                         );
@@ -386,7 +393,7 @@ function QueryForm({
                                 </Button>
 
                                 <Form.Group as={Row} className="mb3">
-                                    <Form.Label htmlFor="Select">Select Constraints</Form.Label>
+                                    <Form.Label htmlFor="Select">Cardinality constraints</Form.Label>
 
 
                                     {formConstraints.map((form, index) => {
@@ -510,7 +517,8 @@ function QueryForm({
                                     <ShowQueryTable containerClassName={"requested-query-dynamic-table"}
                                                     data={originalQueryResults}
                                                     selectedFields={getSelectedFields()}
-                                                    removedFromOriginal={[]}></ShowQueryTable>
+                                                    removedFromOriginal={[]}
+                                                    alwaysShow={true}></ShowQueryTable>
                                 </div> : ''}</div>
                         </Col>
                     </Row>
