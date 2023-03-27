@@ -35,6 +35,7 @@ function QueryForm({
     const [selectedSortBy, setSelectedSortBy] = useState(sortByOprions[0]);
     const [unlikelyChangedFields, setUnlikelyChangedFields] = useState([]);
     const [DBPreview, setDBPreview] = useState(undefined);
+    const [cardinalitySatisfaction, setCardinalitySatisfaction] = useState([]);
 
     const sendSortRefirementsRequest = async (unlikelyFields) => {
         const sort_refinements_response = await fetch('http://127.0.0.1:5000/sort_refinements', {
@@ -182,7 +183,8 @@ function QueryForm({
             }
             const refs = await run_query_response.text();
             console.log('query is: ', JSON.parse(refs));
-            setRefinements(JSON.parse(refs));
+            setRefinements(JSON.parse(refs)["refinements"]);
+            setCardinalitySatisfaction(JSON.parse(refs)["original_cardinality_satisfaction"]);
 
 
         } catch (err) {
@@ -519,6 +521,17 @@ function QueryForm({
                                                     selectedFields={getSelectedFields()}
                                                     removedFromOriginal={[]}
                                                     alwaysShow={true}></ShowQueryTable>
+                                    <br/><b>Cardinality Constraints Satisfaction:</b><br/>
+                                    {cardinalitySatisfaction.length === 0 ?
+                                        <>Calculating Cardinality... </> :
+                                        <>
+                                            The query doesn't meet the constraints.<br/>
+                                            <>{cardinalitySatisfaction.map((con) =>
+                                                <div>{con['group']} = {con['amount']}<br/></div>)}</>
+                                        </>
+                                    }
+
+
                                 </div> : ''}</div>
                         </Col>
                     </Row>

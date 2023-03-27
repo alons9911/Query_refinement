@@ -39,8 +39,9 @@ def get_fields_from_dict_query(dict_query: Dict):
     return selection_numeric_attributes, selection_categorical_attributes, fields
 
 
-def set_fields_to_dict_query(fields: List, dict_query: Dict):
+def set_fields_to_dict_query(fields: List, table_name: str, dict_query: Dict):
     dict_query = copy.deepcopy(dict_query)
+    dict_query['tables'].append(table_name)
     numeric_conds = dict_query['selection_numeric_attributes']
     categorical_conds = dict_query['selection_categorical_attributes']
 
@@ -129,38 +130,61 @@ def create_str_query_as_dict(table_name: str, dict_query: Dict, original_query: 
     }
 
 
-def translate_minimal_refinement_to_dict(minimal_refinement: List[int], dict_query: Dict[Any, None], table_name):
+def translate_minimal_refinement_to_dict(minimal_refinement: List[int], dict_query: Dict[Any, None], order_in_results: List[str], table_name):
     selection_numeric_attributes, selection_categorical_attributes, _ = get_fields_from_dict_query(dict_query)
 
     # assert len(minimal_refinement) == len(selection_categorical_attributes) + len(selection_numeric_attributes)
 
     index = 0
-    for attr in selection_numeric_attributes:
-        dict_query['selection_numeric_attributes'][attr][1] = minimal_refinement[index]
-        index += 1
-
-    for attr in selection_categorical_attributes:
-        selected_options = dict_query['selection_categorical_attributes'][attr]
-        all_options = dict_query['categorical_attributes'][attr]
-        missing_options = [option for option in all_options if option not in selected_options]
-
-        additional_options = []
-        for option in missing_options:
-            if minimal_refinement[index] == 1:
-                additional_options.append(option)
+    attrs = [attr[:attr.find('__')] if attr.find('__') != -1 else attr for attr in order_in_results]
+    def remove_dups(items):
+        seen = set()
+        seen_add = seen.add
+        return [item for item in items if not (item in seen or seen_add(item))]
+    attrs = remove_dups(attrs)
+    for attr in attrs:
+        if attr in selection_numeric_attributes:
+            dict_query['selection_numeric_attributes'][attr][1] = minimal_refinement[index]
             index += 1
-        dict_query['selection_categorical_attributes'][attr] = selected_options + additional_options
+        else:
+            dict_query['selection_categorical_attributes'][attr] = []
+            all_options = [op[op.find('__') + 2:] for op in order_in_results if op.startswith(attr)]
+            #selected_options = dict_query['selection_categorical_attributes'][attr]
+            #missing_options = [option for option in all_options if option not in selected_options]
+
+            refinement_options = []
+            for option in all_options:
+                if minimal_refinement[index] == 1:
+                    refinement_options.append(option)
+                index += 1
+            dict_query['selection_categorical_attributes'][attr] = refinement_options
+
+    # for attr in selection_categorical_attributes:
+    #     selected_options = dict_query['selection_categorical_attributes'][attr]
+    #     all_options = dict_query['categorical_attributes'][attr]
+    #     missing_options = [option for option in all_options if option not in selected_options]
+    #
+    #     for attr in selection_numeric_attributes:
+    #         dict_query['selection_numeric_attributes'][attr][1] = minimal_refinement[index]
+    #         index += 1
+    #
+    #     refinement_options = []
+    #     for option in missing_options:
+    #         if minimal_refinement[index] == 1:
+    #             refinement_options.append(option)
+    #         index += 1
+    #     dict_query['selection_categorical_attributes'][attr] = selected_options + refinement_options
     return dict_query
 
 
-def translate_minimal_refinement(minimal_refinement: List[int], dict_query: Dict[Any, None], table_name):
+def translate_minimal_refinement(minimal_refinement: List[int], dict_query: Dict[Any, None], order_in_results: List[str], table_name):
     return translate_dict_query(table_name,
-                                translate_minimal_refinement_to_dict(minimal_refinement, dict_query, table_name))
+                                translate_minimal_refinement_to_dict(minimal_refinement, dict_query, order_in_results, table_name))
 
 
-def translate_minimal_refinements(minimal_refinements: List[List[int]], dict_query: Dict[Any, None], table_name):
-    refinements = [{"query_str": translate_minimal_refinement(min_ref, copy.deepcopy(dict_query), table_name),
-                    "query_dict": translate_minimal_refinement_to_dict(min_ref, copy.deepcopy(dict_query), table_name)}
+def translate_minimal_refinements(minimal_refinements: List[List[int]], dict_query: Dict[Any, None], order_in_results: List[str], table_name):
+    refinements = [{"query_str": translate_minimal_refinement(min_ref, copy.deepcopy(dict_query), order_in_results, table_name),
+                    "query_dict": translate_minimal_refinement_to_dict(min_ref, copy.deepcopy(dict_query), order_in_results, table_name)}
                    for min_ref in minimal_refinements]
     for ref in refinements:
         ref["str_query_as_dict"] = create_str_query_as_dict(table_name, ref["query_dict"], dict_query)

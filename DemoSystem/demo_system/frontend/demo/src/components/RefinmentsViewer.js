@@ -15,14 +15,14 @@ import Button from "react-bootstrap/Button";
 
 class RefinementsViewer extends React.Component {
 
-    sortByOptions = ['Change In Result', 'Change In Selection Condition', 'Change In Group Cardinality']
+    sortByOptions = ['Change In Result', 'Change In Selection Conditions', 'Change In Groups Cardinality']
 
     // Constructor
     constructor(props) {
         super(props);
 
         this.state = {
-            selectedSortBy: this.sortByOptions[0],
+            selectedSortBy: this.sortByOptions[1],
             unlikelyChangedFields: [],
             refinements: [],
             loading: false,
@@ -196,7 +196,7 @@ class RefinementsViewer extends React.Component {
                                     </Form.Group>
                                 </Col>
                                 <Col sm={7}>
-                                    {selectedSortBy === 'Change In Selection Condition' ?
+                                    {selectedSortBy === 'Change In Selection Conditions' ?
                                         <Form.Group as={Row} className="mb3">
                                             <Form.Label htmlFor="Select"> Choose predicate to sort</Form.Label>
                                             <div className="tags">
