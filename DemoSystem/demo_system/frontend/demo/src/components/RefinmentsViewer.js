@@ -3,7 +3,7 @@ import './QueryForm.css';
 
 import React, {useState} from 'react';
 import Form from "react-bootstrap/Form";
-import {Row} from "react-bootstrap";
+import {Col, Row} from "react-bootstrap";
 import {Select} from "antd";
 import {MdClose} from "react-icons/md";
 import ShowQueryTable from "./ShowQueryTable";
@@ -15,20 +15,21 @@ import Button from "react-bootstrap/Button";
 
 class RefinementsViewer extends React.Component {
 
-    sortByOptions = ['Jaccard Similarity', 'Unlikely Changed Fields', 'Query Fields Constraints']
+    sortByOptions = ['Change In Result', 'Change In Selection Conditions', 'Change In Groups Cardinality']
 
     // Constructor
     constructor(props) {
         super(props);
 
         this.state = {
-            selectedSortBy: this.sortByOptions[0],
+            selectedSortBy: this.sortByOptions[1],
             unlikelyChangedFields: [],
             refinements: [],
             loading: false,
             tableName: '',
             formFields: [],
-            selectedFields: []
+            selectedFields: [],
+            higherToLowerSorting: true
         };
 
     }
@@ -37,12 +38,21 @@ class RefinementsViewer extends React.Component {
         this.setState({refinements: refs});
     }
 
+    swapSortingOrder(currentOrder){
+        this.setState({higherToLowerSorting: !currentOrder})
+    }
+
     setSelectedSortBy(selected) {
         this.setState({selectedSortBy: selected});
     }
 
     setUnlikelyChangedFields(fields) {
         this.setState({unlikelyChangedFields: fields});
+    }
+
+
+    swapRefinementsIfNeeded(refs) {
+        return this.state.higherToLowerSorting ? refs : refs.reverse();
     }
 
     // ComponentDidMount is used to
@@ -138,7 +148,8 @@ class RefinementsViewer extends React.Component {
             loading,
             tableName,
             formFields,
-            selectedFields
+            selectedFields,
+            higherToLowerSorting
         } = this.state;
 
 
@@ -151,77 +162,111 @@ class RefinementsViewer extends React.Component {
                     <>
                         <h3>We found some minimal refinements:</h3>
                         <Form>
-                            <Form.Group as={Row} className="mb3">
-                                <Row>
-                                    <Form.Label htmlFor="Select">Sort By</Form.Label>
-                                    <Select className="sort-by-select"
-                                            defaultValue={selectedSortBy}
-                                            options={this.sortByOptions.map((o) => {
-                                                return {value: o, label: o}
-                                            })}
-                                            onChange={this.handleSortBySelection}
-                                    >
-                                    </Select>
-                                </Row>
-                            </Form.Group>
-                            <br/>
-                            {selectedSortBy === 'Unlikely Changed Fields' ?
-                                <Form.Group as={Row} className="mb3">
-                                    <Row>
-                                        <Form.Label htmlFor="Select">Please choose the fields which shouldn't be change
-                                            by order</Form.Label>
-                                        <div className="tags">
-                                            {unlikelyChangedFields.map((field, index) => (
-                                                <div className="single-tag" key={index}>
-                                                    <span>{field}</span>
-                                                    <i
-                                                        onClick={() => this.removeUnlikelyChangedFields(index)}
-                                                    >
-                                                        <MdClose/>
-                                                    </i>
-                                                </div>
-                                            ))}
+                            <Row>
+                                <Col>
+                                    <Form.Group as={Row} className="mb3">
 
-                                            <input
-                                                className="unlikely-changed-fields-input"
-                                                type="text"
-                                                onKeyDown={event => this.handleUnlikelyChangedFields(event)}
-                                                placeholder="Write some field and press enter"
-                                            />
-                                        </div>
-                                    </Row>
-                                </Form.Group>
-                                : ''}
-                            <OverlayTrigger trigger="hover" placement="right"
-                                            overlay={<Popover id="popover-basic">
-                                                <Popover.Header as="h3">Original Query</Popover.Header>
-                                                <Popover.Body>
-                                                    <QueryView queryDict={this.state.originalQuery}></QueryView>
-                                                </Popover.Body>
-                                            </Popover>}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="lightGreen"
-                                         className="bi bi-lightbulb-fill" viewBox="0 0 16 16">
-                                        <path
-                                            d="M2 6a6 6 0 1 1 10.174 4.31c-.203.196-.359.4-.453.619l-.762 1.769A.5.5 0 0 1 10.5 13h-5a.5.5 0 0 1-.46-.302l-.761-1.77a1.964 1.964 0 0 0-.453-.618A5.984 5.984 0 0 1 2 6zm3 8.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1l-.224.447a1 1 0 0 1-.894.553H6.618a1 1 0 0 1-.894-.553L5.5 15a.5.5 0 0 1-.5-.5z"/>
-                                    </svg>
 
-                            </OverlayTrigger>
-                            <br/>
-                            <ol>
-                                {refinements.map(function (ref, i) {
-                                    return <>
+                                        <Form.Label htmlFor="Select">Sort By
+                                            <Button onClick={() => {this.swapSortingOrder(this.state.higherToLowerSorting)}}
+                                                    className='sort-direction-btn rounded-circle' color="secondery"
+                                                    tag='a'>
+                                                {this.state.higherToLowerSorting ?
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                         fill="red" className="bi bi-arrow-down">
+                                                        <path fill-rule="evenodd"
+                                                              d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"/>
+                                                    </svg> :
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                         fill="green" className="bi bi-arrow-up">
+                                                        <path fill-rule="evenodd"
+                                                              d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/>
+                                                    </svg>
+                                                }
+                                            </Button>
+                                        </Form.Label>
+                                        <Select className="sort-by-select"
+                                                defaultValue={selectedSortBy}
+                                                options={this.sortByOptions.map((o) => {
+                                                    return {value: o, label: o}
+                                                })}
+                                                onChange={this.handleSortBySelection}
+                                        >
+                                        </Select>
+                                    </Form.Group>
+                                </Col>
+                                <Col sm={7}>
+                                    {selectedSortBy === 'Change In Selection Conditions' ?
+                                        <Form.Group as={Row} className="mb3">
+                                            <Form.Label htmlFor="Select"> Choose predicate to sort</Form.Label>
+                                            <div className="tags">
+                                                {unlikelyChangedFields.map((field, index) => (
+                                                    <div className="single-tag" key={index}>
+                                                        <span>{field}</span>
+                                                        <i
+                                                            onClick={() => this.removeUnlikelyChangedFields(index)}
+                                                        >
+                                                            <MdClose/>
+                                                        </i>
+                                                    </div>
+                                                ))}
+
+                                                <input
+                                                    className="unlikely-changed-fields-input"
+                                                    type="text"
+                                                    onKeyDown={event => this.handleUnlikelyChangedFields(event)}
+                                                    placeholder="Select predicates and press enter"
+                                                />
+                                            </div>
+                                        </Form.Group>
+
+                                        : ''}
+                                </Col>
+                            </Row>
+                        </Form>
+
+                        <OverlayTrigger trigger="hover" placement="right"
+                                        overlay={<Popover id="popover-basic">
+                                            <Popover.Header as="h3">Original Query</Popover.Header>
+                                            <Popover.Body>
+                                                <QueryView queryDict={this.state.originalQuery}></QueryView>
+                                            </Popover.Body>
+                                        </Popover>}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green"
+                                 className="bi bi-lightbulb-fill" viewBox="0 0 16 16">
+                                <path
+                                    d="M2 6a6 6 0 1 1 10.174 4.31c-.203.196-.359.4-.453.619l-.762 1.769A.5.5 0 0 1 10.5 13h-5a.5.5 0 0 1-.46-.302l-.761-1.77a1.964 1.964 0 0 0-.453-.618A5.984 5.984 0 0 1 2 6zm3 8.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1l-.224.447a1 1 0 0 1-.894.553H6.618a1 1 0 0 1-.894-.553L5.5 15a.5.5 0 0 1-.5-.5z"/>
+                            </svg>
+
+                        </OverlayTrigger>
+                        <br/>
+                        <ol>
+                            {this.swapRefinementsIfNeeded(refinements).map(function (ref, i) {
+                                return <Row className={"refinement-row"}>
+                                    <Col sm={7}>
                                         <li>
                                             <QueryView queryDict={ref['str_query_as_dict']}/><br/>
-                                            <div className="align-center-div"><b>Jaccard Similarity to Original
-                                                Query: {ref['jaccard_similarity']}</b></div>
+                                            <div className="align-center-div"><b>Result Similarity
+                                                Score: {ref['jaccard_similarity']}</b><br/>
+                                                <>{ref['cardinality_satisfaction'].map((con) => <div>{con['group']} = {con['amount']}<br/></div>)}</>
+
+                                            </div>
                                             <br/></li>
+                                    </Col>
+                                    <Col sm={5}>
                                         <ShowQueryTable containerClassName={"refinements-dynamic-table"}
                                                         data={ref['results']['query_results']}
                                                         selectedFields={selectedFields}
-                                                        removedFromOriginal={ref['results']['removed_from_original']}></ShowQueryTable><br/><br/></>;
-                                })}
-                            </ol>
-                        </Form>
+                                                        alwaysShow={true}
+                                                        removedFromOriginal={ref['results']['removed_from_original']}></ShowQueryTable>
+
+                                    </Col>
+                                </Row>;
+
+                            })}
+                        </ol>
+
+
                     </> : ''}
                 </div>
             </div>

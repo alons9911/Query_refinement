@@ -1,10 +1,12 @@
 .query-table {
     border-collapse: collapse;
-    margin: 25px 0;
     font-size: 0.9em;
     font-family: sans-serif;
     min-width: 400px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    border-color: #3a3a3a;
+    border-style: solid;
+    border-width: thin;
 }
 .query-table thead tr {
     background-color: #009879;
@@ -16,11 +18,11 @@
     padding: 12px 15px;
 }
 .query-table tbody tr {
-    border-bottom: 1px solid #dddddd;
+    border-bottom: 1px solid #9f9e9e;
 }
 
 .query-table tbody tr:nth-of-type(even) {
-    background-color: #f3f3f3;
+    background-color: #e3e0e0;
 }
 
 .query-table tbody tr:last-of-type {
