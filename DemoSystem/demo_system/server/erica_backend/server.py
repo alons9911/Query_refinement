@@ -5,7 +5,7 @@ import sys
 
 from flask import Flask, request
 
-sys.path.append('../../../Algorithm')
+sys.path.append('../../../../Algorithm')
 
 from Algorithm.ProvenanceSearchValues import FindMinimalRefinement, is_int
 
@@ -349,7 +349,7 @@ def run_query():
     separator = ','
     data_format = '.csv'
     time_limit = 60 * 60 * 5
-    data_file_prefix = 'C:\\Users\\Alon Silberstein\\Desktop\\Query_refinement\\DemoSystem\\dbs\\'
+    data_file_prefix = '/DemoSystem/dbs\\'
 
     minimal_refinements, order_in_results, _, assign_to_provenance_num, _, _ = FindMinimalRefinement(data_file_prefix, separator,
                                                                                    query_dict, cons,

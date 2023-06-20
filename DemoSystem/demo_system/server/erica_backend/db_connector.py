@@ -18,7 +18,7 @@ def create_connection(db_file):
 
 
 def get_query_results(query):
-    conn = create_connection("C:\\Users\\Alon Silberstein\\Desktop\\Query_refinement\\demo.sqlite")
+    conn = create_connection("/demo.sqlite")
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
     cur.execute(query)
