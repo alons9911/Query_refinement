@@ -1,0 +1,157 @@
+@import "tags.css";
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin: 5px;
+    height: 50%;
+}
+
+HeaderNavBar {
+    background-color: #4c0bce !important;
+    color: #ffffff !important;
+}
+
+.col-sm-3{
+    max-width: 100% !important;
+}
+.refinement-row {
+    margin-bottom: 40px !important;
+}
+
+.QueryRefinement {
+    color: #000000 !important;
+    padding: 10px;
+}
+
+.form-constraints-control-short {
+    width: 10%;
+}
+.form-conditions-control-short {
+    width: 10%;
+}
+.form-conditions-control-very-short {
+    width: 5%;
+}
+.form-constraints-control-very-short {
+    width: 5%;
+}
+
+.form-constraints-control-long {
+    width: 100%;
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 30px #4d4d50 inset !important;
+    -webkit-text-fill-color: #ffffff;
+}
+
+.form-conditions-control-long {
+    width: 100%;
+}
+
+input, select {
+    background: #ffffff !important;
+    color: #000000 !important;
+    border-color: #8d9ba2 !important;
+    margin: 3px !important;
+    border-width: thin;
+}
+
+.mb-3 {
+    margin-bottom: 0 !important;
+}
+.ant-select-selector {
+    background: #ffffff !important;
+    color: #000000 !important;
+    border-color: #8d9ba2 !important;
+    margin: 3px !important;
+    --bs-dropdown-bg: #4d4d50 !important;
+}
+Select {
+    margin-right: 10px !important;
+}
+
+.remove-btn {
+    color: #ef2020 !important;
+    border-color: transparent !important;
+    box-shadow: none;
+    margin-right: 5px;
+    background: transparent !important;
+}
+
+.upload-btn {
+    color: #307307 !important;
+    border-color: transparent !important;
+    box-shadow: none;
+    margin-right: 5px;
+    background: transparent !important;
+}
+
+.add-btn {
+    color: rgba(133, 100, 236, 0.61) !important;
+    border-color: transparent !important;
+    box-shadow: none;
+    background: transparent !important;
+}
+
+.set-default-btn {
+    margin-right: 5px;
+    color: #137ae8 !important;
+    border-color: transparent !important;
+    box-shadow: none;
+    background: transparent !important;
+
+}
+
+.sort-direction-btn {
+    border-color: transparent !important;
+    box-shadow: none;
+    margin-right: 5px;
+    background: transparent !important;
+}
+
+.submit-btn {
+    margin-right: 5px;
+    color: #01c28d !important;
+    border-color: transparent !important;
+    box-shadow: none;
+    background: transparent !important;
+}
+
+
+
+
+.reset-btn {
+    margin-right: 5px;
+    color: #ef2020 !important;
+    border-color: transparent !important;
+    box-shadow: none;
+    background: transparent !important;
+}
+
+
+.btn-default{
+    color: #333;
+    background-color: transparent !important;
+    border-color: transparent;
+    outline: 0;
+}
+
+.btn-default:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+#popover-basic {
+    max-height: 800px;
+    max-width: 800px;
+}
+
+.sort-by-select {
+    width: 80% !important;
+}

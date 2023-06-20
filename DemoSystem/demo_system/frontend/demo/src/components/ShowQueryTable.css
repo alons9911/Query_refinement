@@ -1,0 +1,38 @@
+input[type=checkbox]:checked {
+  background-color: #8deebf !important;
+}
+
+.requested-query-dynamic-table {
+  overflow: scroll;
+  max-height: 250px !important;
+  max-width: 90vh !important;
+}
+
+.refinements-dynamic-table {
+  overflow: scroll;
+  max-height: 250px !important;
+  max-width: 180vh !important;
+}
+
+.db-preview-dynamic-table{
+  overflow: scroll;
+  max-height: 250px !important;
+  max-width: 180vh !important;
+}
+
+.bold-clause {
+  color: #2874fc !important;
+}
+
+.query-view {
+  border: 3px solid #6ea259;
+  border-radius: 5px;
+}
+
+.inner-query-view {
+  margin: 5px;
+}
+
+.align-center-div {
+  text-align: center;
+}
