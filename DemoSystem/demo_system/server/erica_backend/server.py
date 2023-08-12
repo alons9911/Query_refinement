@@ -2,6 +2,7 @@ import copy
 import json
 import math
 import sys
+from pathlib import Path
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
@@ -21,6 +22,8 @@ import pandas as pd
 
 app = Flask(__name__)
 CORS(app, origins='*')
+
+data_file_prefix = '../../../dbs/'
 
 QUERY_TEMPLATE = {
     "tables": [],
@@ -49,8 +52,6 @@ constraints = []
 def hello_world():
     return "<p>Hello, World!</p>"
 
-
-data_file = r"dbs/students.csv"
 
 
 def save_refinements(refinements):
@@ -119,7 +120,7 @@ def load_refinements():
 @cross_origin(origins='*')
 def get_db_preview():
     table_name = request.json['table_name']
-    results = get_query_results(f"SELECT * FROM '{table_name}'")
+    results = get_query_results(f"SELECT * FROM '{table_name}' LIMIT 100")
     response = jsonify(results)
     response.headers.add('Access-Control-Allow-Origin', '*')
     return results
@@ -293,6 +294,7 @@ def sort_refinements():
     sorting_func = request.json.get('sorting_func', 'Result Similarity')
     conds = request.json['conds']
     table_name = request.json['table_name']
+    data_file = f'{data_file_prefix}{table_name}.csv'
 
     query_dict = set_fields_to_dict_query(conds, table_name, QUERY_TEMPLATE)
 
@@ -354,8 +356,6 @@ def run_query():
     separator = ','
     data_format = '.csv'
     time_limit = 60 * 60 * 5
-    data_file_prefix = '/DemoSystem/dbs\\'
-
     minimal_refinements, order_in_results, _, assign_to_provenance_num, _, _ = FindMinimalRefinement(data_file_prefix, separator,
                                                                                    query_dict, cons,
                                                                                    data_format, time_limit)
@@ -374,6 +374,8 @@ def run_query():
     queries_with_results.sort(
         key=get_jaccard_similarity_func(original_results),
         reverse=True)
+
+    data_file = f'{data_file_prefix}{table_name}.csv'
 
     res = [{'query': query['query'],
             'query_dict': query['query_dict'],

@@ -274,7 +274,7 @@ function QueryForm({
         await sendDBPreviewRequest(event);
     }
 
-    const optionalDBs = ["students", "healthcare", "acs_income", "compas-scores"];
+    const optionalDBs = ["students", "healthcare", "acs_income", "compas_scores"];
 
     if (DBPreview.length === 0 && !DBPreviewLoading) {
         setDBPreviewLoading(true);
