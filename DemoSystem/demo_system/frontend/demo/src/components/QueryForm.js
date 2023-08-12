@@ -34,7 +34,7 @@ function QueryForm({
     const sortByOprions = ['Result Similarity', 'Unlikely Changed Fields', 'Query Fields Constraints']
     const [selectedSortBy, setSelectedSortBy] = useState(sortByOprions[0]);
     const [unlikelyChangedFields, setUnlikelyChangedFields] = useState([]);
-    const [DBPreview, setDBPreview] = useState(['']);
+    const [DBPreview, setDBPreview] = useState([]);
     const [DBPreviewLoading, setDBPreviewLoading] = useState(false);
     const [cardinalitySatisfaction, setCardinalitySatisfaction] = useState([]);
 
