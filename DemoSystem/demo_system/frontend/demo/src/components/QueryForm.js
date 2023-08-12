@@ -20,21 +20,22 @@ import QueryView from "./QueryView";
 import DynamicTable from "./DynamicTable";
 
 function QueryForm({
-                       formFields, setFormFields,
-                       formConstraints, setFormConstraints,
-                       table, setTable,
-                       tableFields, setTableFields,
-                       query, setQuery,
-                       originalQueryResults, setOriginalQueryResults,
-                       refinements, setRefinements,
-                       err, setErr,
-                       optionalOperators
-                   }) {
+                             formFields, setFormFields,
+                             formConstraints, setFormConstraints,
+                             table, setTable,
+                             tableFields, setTableFields,
+                             query, setQuery,
+                             originalQueryResults, setOriginalQueryResults,
+                             refinements, setRefinements,
+                             err, setErr,
+                             optionalOperators
+                         }) {
 
     const sortByOprions = ['Result Similarity', 'Unlikely Changed Fields', 'Query Fields Constraints']
     const [selectedSortBy, setSelectedSortBy] = useState(sortByOprions[0]);
     const [unlikelyChangedFields, setUnlikelyChangedFields] = useState([]);
-    const [DBPreview, setDBPreview] = useState(undefined);
+    const [DBPreview, setDBPreview] = useState(['']);
+    const [DBPreviewLoading, setDBPreviewLoading] = useState(false);
     const [cardinalitySatisfaction, setCardinalitySatisfaction] = useState([]);
 
     const sendSortRefirementsRequest = async (unlikelyFields) => {
@@ -255,14 +256,14 @@ function QueryForm({
                 },
             });
 
+
+
             if (!db_priview_response.ok) {
                 throw new Error(`Error! status: ${db_priview_response.status}`);
             }
             const preview = await db_priview_response.text();
             console.log('db preview is: ', JSON.parse(preview));
             setDBPreview(JSON.parse(preview));
-
-
         } catch (err) {
             setErr(err.message);
         }
@@ -273,10 +274,11 @@ function QueryForm({
         await sendDBPreviewRequest(event);
     }
 
-    const optionalDBs = ["students", "healthcare", "acs_income","compas-scores"];
+    const optionalDBs = ["students", "healthcare", "acs_income", "compas-scores"];
 
-    if (DBPreview === undefined) {
-        sendDBPreviewRequest(table);
+    if (DBPreview.length === 0 && !DBPreviewLoading) {
+        setDBPreviewLoading(true);
+        sendDBPreviewRequest(table).then(r => setDBPreviewLoading(false));
     }
 
 

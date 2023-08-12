@@ -10,6 +10,7 @@ setup(
     install_requires=[
         'numpy',
         'pandas==1.5.2',
-        'flask>=2.2.2'
+        'flask>=2.2.2',
+        'flask_cors'
     ],
 )

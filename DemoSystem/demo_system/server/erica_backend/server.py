@@ -3,7 +3,8 @@ import json
 import math
 import sys
 
-from flask import Flask, request
+from flask import Flask, request, jsonify
+from flask_cors import CORS, cross_origin
 
 sys.path.append('../../../../Algorithm')
 
@@ -19,6 +20,7 @@ from query_translator import translate_minimal_refinements, build_query, \
 import pandas as pd
 
 app = Flask(__name__)
+CORS(app, origins='*')
 
 QUERY_TEMPLATE = {
     "tables": [],
@@ -114,9 +116,12 @@ def load_refinements():
     return last_refinements
 
 @app.post("/get_db_preview")
+@cross_origin(origins='*')
 def get_db_preview():
     table_name = request.json['table_name']
     results = get_query_results(f"SELECT * FROM '{table_name}'")
+    response = jsonify(results)
+    response.headers.add('Access-Control-Allow-Origin', '*')
     return results
 
 
