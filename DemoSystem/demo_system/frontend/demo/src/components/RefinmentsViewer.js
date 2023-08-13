@@ -29,7 +29,9 @@ class RefinementsViewer extends React.Component {
             tableName: '',
             formFields: [],
             selectedFields: [],
-            higherToLowerSorting: true
+            higherToLowerSorting: true,
+            cardinalityGroups: [],
+            selectedCardinalityGroup: ''
         };
 
     }
@@ -38,7 +40,7 @@ class RefinementsViewer extends React.Component {
         this.setState({refinements: refs});
     }
 
-    swapSortingOrder(currentOrder){
+    swapSortingOrder(currentOrder) {
         this.setState({higherToLowerSorting: !currentOrder})
     }
 
@@ -48,6 +50,14 @@ class RefinementsViewer extends React.Component {
 
     setUnlikelyChangedFields(fields) {
         this.setState({unlikelyChangedFields: fields});
+    }
+
+    setCardinalityGroups(groups) {
+        this.setState({cardinalityGroups: groups});
+    }
+
+    setSelectedCardinalityGroup(group) {
+        this.setState({selectedCardinalityGroup: group});
     }
 
 
@@ -72,17 +82,23 @@ class RefinementsViewer extends React.Component {
         }).then(
             result => JSON.parse(result)
         ).then((result) => {
+            let cardinalityGroups = result['refinements'].length === 0 ? [] : result['refinements'][0]['cardinality_satisfaction'].map((car) => car['group']);
+
             console.log('refinemenets loaded: ', result['refinements']);
             console.log('form_fields loaded: ', result['form_fields']);
             console.log('table loaded: ', result['table']);
             console.log('selected_fields loaded: ', result['selected_fields']);
             console.log('original_str_query_as_dict loaded: ', result['original_str_query_as_dict']);
+            console.log('cardinality groups: ', cardinalityGroups);
+
             this.setState({
                 refinements: result['refinements'],
                 formFields: result['form_fields'],
                 tableName: result['table'],
                 selectedFields: result['selected_fields'],
                 originalQuery: result['original_str_query_as_dict'],
+                cardinalityGroups: cardinalityGroups,
+                selectedCardinalityGroup: cardinalityGroups[0],
                 loading: true
             });
         });
@@ -97,7 +113,8 @@ class RefinementsViewer extends React.Component {
                 'table_name': this.state.tableName,
                 'refinements': this.state.refinements,
                 'sorting_func': this.state.selectedSortBy,
-                'unlikely_changed_fields': unlikelyFields
+                'unlikely_changed_fields': unlikelyFields,
+                'cardinality_group': this.state.selectedCardinalityGroup
             }),
             headers: {
                 'Content-Type': 'application/json',
@@ -114,6 +131,11 @@ class RefinementsViewer extends React.Component {
     }
     handleSortBySelection = async (event) => {
         this.setSelectedSortBy(event);
+        await this.sendSortRefirementsRequest([]);
+    }
+
+    handleCardinalityGroupSelection = async (event) => {
+        await this.setSelectedCardinalityGroup(event);
         await this.sendSortRefirementsRequest([]);
     }
 
@@ -149,7 +171,9 @@ class RefinementsViewer extends React.Component {
             tableName,
             formFields,
             selectedFields,
-            higherToLowerSorting
+            higherToLowerSorting,
+            cardinalityGroups,
+            selectedCardinalityGroup,
         } = this.state;
 
 
@@ -168,7 +192,9 @@ class RefinementsViewer extends React.Component {
 
 
                                         <Form.Label htmlFor="Select">Sort By
-                                            <Button onClick={() => {this.swapSortingOrder(this.state.higherToLowerSorting)}}
+                                            <Button onClick={() => {
+                                                this.swapSortingOrder(this.state.higherToLowerSorting)
+                                            }}
                                                     className='sort-direction-btn rounded-circle' color="secondery"
                                                     tag='a'>
                                                 {this.state.higherToLowerSorting ?
@@ -220,7 +246,19 @@ class RefinementsViewer extends React.Component {
                                             </div>
                                         </Form.Group>
 
-                                        : ''}
+                                        : selectedSortBy === 'Change In Groups Cardinality' ?
+                                            <Form.Group as={Row} className="mb3">
+                                                <Form.Label htmlFor="Select"> Choose group to sort</Form.Label>
+                                                <Select className="group-cardinality-select"
+                                                defaultValue={selectedCardinalityGroup}
+                                                options={cardinalityGroups.map((o) => {
+                                                    return {value: o, label: o}
+                                                })}
+                                                onChange={this.handleCardinalityGroupSelection}
+                                        >
+                                        </Select>
+                                            </Form.Group>
+                                            : ''}
                                 </Col>
                             </Row>
                         </Form>
@@ -248,7 +286,8 @@ class RefinementsViewer extends React.Component {
                                             <QueryView queryDict={ref['str_query_as_dict']}/><br/>
                                             <div className="align-center-div"><b>Result Similarity
                                                 Score: {ref['jaccard_similarity']}</b><br/>
-                                                <>{ref['cardinality_satisfaction'].map((con) => <div>{con['group']} = {con['amount']}<br/></div>)}</>
+                                                <>{ref['cardinality_satisfaction'].map((con) =>
+                                                    <div>{con['group']} = {con['amount']}<br/></div>)}</>
 
                                             </div>
                                             <br/></li>

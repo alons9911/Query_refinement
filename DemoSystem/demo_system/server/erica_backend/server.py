@@ -170,6 +170,15 @@ def unlikely_changed_fields_sorting_key(unlikely_fields, original_query_dict, nu
     return inner
 
 
+
+def group_cardinality_sorting_key(group):
+    def inner(query):
+        cardinality_satisfaction = query['cardinality_satisfaction']
+        for card in cardinality_satisfaction:
+            if card['group'] == group:
+                return card['amount']
+    return inner
+
 def get_jaccard_similarity_func(original_results):
     def inner(query):
         original_results_strs = [json.dumps(r) for r in original_results]
@@ -300,6 +309,7 @@ def sort_refinements():
 
     queries_with_results = [{'query': query['query'],
                              'query_dict': query['query_dict'],
+                             'cardinality_satisfaction': query['cardinality_satisfaction'],
                              'str_query_as_dict': query['str_query_as_dict'],
                              'results': get_query_results(query['query'])} for query in refinements]
 
@@ -323,6 +333,14 @@ def sort_refinements():
             queries_with_results.sort(
                 key=get_jaccard_similarity_func(original_results),
                 reverse=True)
+    elif sorting_func == 'Change In Groups Cardinality':
+        cardinality_group = request.json.get('cardinality_group')
+
+        queries_with_results.sort(
+            key=get_sorting_key(
+                group_cardinality_sorting_key(cardinality_group),
+                get_jaccard_similarity_func(original_results)),
+            reverse=True)
     res = [{'query': query['query'],
             'query_dict': query['query_dict'],
             'str_query_as_dict': query['str_query_as_dict'],
