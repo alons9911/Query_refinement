@@ -1,6 +1,11 @@
 import sqlite3
 from sqlite3 import Error
 
+import pandas
+import requests
+
+from erica_backend.query_translator import build_query
+
 
 def create_connection(db_file):
     """ create a database connection to the SQLite database
@@ -28,8 +33,11 @@ def get_query_results(query):
     if len(rows) > 0:
         keys = rows[0].keys()
         results = [{keys[i]: row[i] for i in range(len(keys))} for row in rows]
-    #print(results)
+    # print(results)
     return results
 
+
 if __name__ == "__main__":
-    get_query_results("SELECT * FROM 'compas-scores' AS c WHERE c.juv_fel_count >= 3.0 AND c.decile_score >= 8.0 AND c.c_charge_degree in ('O', 'F', 'M');")
+    res = get_query_results(
+        "SELECT * FROM 'compas_scores' AS c WHERE c.juv_fel_count >= 3.0 AND c.decile_score >= 8.0 AND c.c_charge_degree in ('O', 'F', 'M');")
+    print(res)

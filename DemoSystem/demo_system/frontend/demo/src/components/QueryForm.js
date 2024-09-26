@@ -123,10 +123,10 @@ function QueryForm({
 
     const setDefault = () => {
         let fields = [
-            {field: 'grade1', operator: '>=', value: '10'},
-            {field: 'grade2', operator: '>=', value: '10'},
+            {field: 'grade1', operator: '>=', value: '13'},
+            {field: 'grade2', operator: '>=', value: '13'},
             {field: 'age', operator: 'IN', value: '["15-16","17-18"]'},
-            {field: 'extraActivities', operator: 'IN', value: '["yes"]'},
+            {field: 'higherEdIntention', operator: 'IN', value: '["yes"]'},
         ]
         let constraints = [
             {groups: [{field: 'address', value: 'Rural'}], operator: '>=', amount: '15'},
